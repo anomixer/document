@@ -5455,7 +5455,7 @@ xf[1053] = "yyyy-mm-dd;dddd 'den' d mmmm yyyy;d mmmm yyyy;dd-mm-yy;yy mm dd;d mm
 xf[1055] = "d.mm.yyyy;d Mmmm yyyy Dddd;d Mmmm yyyy;d.mm.yy;yyyy-mm-dd;d-Mmm-yy;d/mm/yyyy;d Mmm. yy;d/mm/yy;Mmmm yy;Mmm-yy;d.mm.yyyy hh:mm;d.mm.yyyy hh:mm:ss;H:mm am/pm;H:mm:ss am/pm;hh:mm;hh:mm:ss".split(";");
 xf[1058] = "dd.mm.yyyy;dddd, d mmmm yyyy р.;d mmmm yyyy р.;dd.mm.yy;yyyy-mm-dd;d-mmm-yy;dd/mm/yyyy;d mmm. yy р.;dd/mm/yy;mmmm yy р.;mmm-yy;dd.mm.yyyy hh:mm;dd.mm.yyyy hh:mm:ss;H:mm;H:mm:ss;hh:mm;hh:mm:ss".split(";");
 xf[1066] = "dd/mm/yyyy;Dddd, dd Mmmm yyyy;dd Mmmm yyyy;dd/mm/yy;yyyy-mm-dd;d-Mmm-yy;d-Mmmm-yy;dd Mmm. yy;dd.mm.yy;Mmmm yy;Mmm-yy;dd/mm/yyyy H:mm am/pm;dd/mm/yyyy H:mm:ss am/pm;H:mm am/pm;H:mm:ss am/pm;hh:mm;hh:mm:ss".split(";");
-xf[2052] = "yyyy/m/d yyyy年m月d日 yyyy年m月d日dddd yy.m.d yyyy年m月 h时m分ss秒 h时m分 am/pmh时m分 JYYYY年mmmmd日 JYYYY年JM月JD日dddd JYYYY年JM月JD".split(" ");
+xf[2052] = "yyyy/m/d yyyy年m月d日 yyyy年m月d日dddd yy.m.d yyyy年m月 h時m分ss秒 h時m分 am/pmh時m分 JYYYY年mmmmd日 JYYYY年JM月JD日dddd JYYYY年JM月JD".split(" ");
 xf[1033] = "M/d/yyyy;dddd, MMMM d, yyyy;MMMM d, yyyy;M/d/yy;yyyy-MM-dd;d-MMM-yy;M.d.yyyy;MMM. d, yy;d MMMM yyyy;MMMM yy;MMM-yy;M/d/yyyy h:mm am/pm;M/d/yyyy h:mm:ss am/pm;h:mm am/pm;h:mm:ss am/pm;HH:mm;HH:mm:ss".split(";");
 bc.Asc = bc.Asc || {};
 bc.Asc.FONT_THUMBNAIL_HEIGHT = gc;
@@ -18636,7 +18636,7 @@ bc.Asc.c_oAscDateTimeFormat = bc.Asc.ZYb = xf;
     } else if (e === Asc.Pb.N_a) {
       n = false;
       a = [String.fromCharCode(19968), String.fromCharCode(20108), String.fromCharCode(19977), String.fromCharCode(22235), String.fromCharCode(20116), String.fromCharCode(20845), String.fromCharCode(19971), String.fromCharCode(20843), String.fromCharCode(20061)];
-      i = ["万", "千", "百", "十"];
+      i = ["萬", "千", "百", "十"];
     }
     var r = Math.pow(10, i.length);
     if (t < r || !n && t < r * 2 && e !== Asc.Pb.N_a) {
@@ -34354,10 +34354,10 @@ window.AscCommon.od = new jh();
       }
       e.Ip(u.sm, r.O3);
     });
-    t.sdkLog?.verbose("开始加载sdk-all.js");
+    t.sdkLog?.verbose("開始載入sdk-all.js");
     const o = Date.now();
     AscCommon.ZKg(this.U5c(), function () {
-      t.sdkLog?.debug("sdk-all.js加载成功，耗时：", Date.now() - o);
+      t.sdkLog?.debug("sdk-all.js載入成功，耗時：", Date.now() - o);
       e.$ha = true;
       e.v6c();
       e.uQe();
@@ -34943,7 +34943,7 @@ window.AscCommon.od = new jh();
   };
   let h = 0;
   o.prototype.aIb = function () {
-    t.log[++h == 1 ? "debug" : "verbose"].bind(t.log)("文档渲染完成 " + h, Date.now() - t.__start, "渲染时间(含LoadModules):", Date.now() - t.__start_open_doc, "渲染时间:", Date.now() - t.__start_real_open_doc);
+    t.log[++h == 1 ? "debug" : "verbose"].bind(t.log)("文件渲染完成 " + h, Date.now() - t.__start, "渲染時間(含LoadModules):", Date.now() - t.__start_open_doc, "渲染時間:", Date.now() - t.__start_real_open_doc);
     var o = this;
     this.OBh?.();
     this.Twa = true;
@@ -36006,7 +36006,7 @@ window.AscCommon.od = new jh();
       this.V6b = e;
     }
     if (this.$ha && this.Xl && this.V6b && this.LZf()) {
-      t.sdkLog?.debug("开始打开文档和渲染", "apiBase.onEndLoadFile()", Date.now() - t.__start);
+      t.sdkLog?.debug("開始開啟文件和渲染", "apiBase.onEndLoadFile()", Date.now() - t.__start);
       t.__start_real_open_doc = Date.now();
       e = i.qe.Cp;
       let o;

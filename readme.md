@@ -1,6 +1,6 @@
 # OnlyOffice Web
 
-🌐 **Live Demo**: https://ranuts.github.io/document/
+🌐 **Live Demo**: https://anomixer.github.io/document/
 
 [English](readme.md) | [中文](readme.zh.md)
 
@@ -26,7 +26,7 @@ This project is built on the following core technologies:
 
 ### Basic Usage
 
-1. Visit the [Online Editor](https://ranuts.github.io/document/)
+1. Visit the [Online Editor](https://anomixer.github.io/document/)
 2. Upload your document files
 3. Edit directly in your browser
 4. Download the edited documents

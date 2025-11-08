@@ -89,7 +89,7 @@ document.body.appendChild(fileInput);
 
 const onOpenDocument = async () => {
   return new Promise((resolve) => {
-    // 触发文件选择器的点击事件
+    // 觸發檔案選擇器的點選事件
     fileInput.click();
     fileInput.onchange = async (event) => {
       const file = (event.target as HTMLInputElement).files?.[0];
@@ -105,7 +105,7 @@ const onOpenDocument = async () => {
         await handleDocumentOperation({ file: fileBlob, fileName, isNew: !fileBlob });
         resolve(true);
         removeLoading();
-        // 清空文件选择，这样同一个文件可以重复选择
+        // 清空檔案選擇，這樣同一個檔案可以重複選擇
         fileInput.value = '';
       }
     };
@@ -114,7 +114,7 @@ const onOpenDocument = async () => {
 
 // Create and append the control panel
 const createControlPanel = () => {
-  // 创建控制面板容器
+  // 建立控制面板容器
   const container = document.createElement('div');
   container.style.cssText = `
     width: 100%;
@@ -136,7 +136,7 @@ const createControlPanel = () => {
     align-items: center;
   `;
 
-  // 创建标题区域
+  // 建立標題區域
   const titleSection = document.createElement('div');
   titleSection.style.cssText = `
     display: flex;
@@ -172,7 +172,7 @@ const createControlPanel = () => {
 
   controlPanel.appendChild(titleSection);
 
-  // 创建按钮组
+  // 建立按鈕組
   const buttonGroup = document.createElement('div');
   buttonGroup.style.cssText = `
     display: flex;
@@ -205,7 +205,7 @@ const createControlPanel = () => {
 
   controlPanel.appendChild(buttonGroup);
 
-  // 将控制面板添加到容器中
+  // 將控制面板新增到容器中
   container.appendChild(controlPanel);
 
   // 在 body 的最前面插入容器

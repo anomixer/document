@@ -42,38 +42,38 @@ Module.noExitRuntime = true;
 	// 	suffix = '';
 	// }
 
-	// 检测浏览器是否支持 brotli 解压缩
+	// 檢測瀏覽器是否支援 brotli 解壓縮
 	function supportsBrotli() {
-		// 检查是否支持 Brotli 解压缩
-		// 现代浏览器会自动处理 Content-Encoding: br 头
+		// 檢查是否支援 Brotli 解壓縮
+		// 現代瀏覽器會自動處理 Content-Encoding: br 頭
 		if (typeof window !== 'undefined' && window.navigator) {
-			// 检查是否支持 fetch 和 ArrayBuffer
+			// 檢查是否支援 fetch 和 ArrayBuffer
 			return typeof fetch === 'function' && typeof ArrayBuffer !== 'undefined';
 		}
 		return false;
 	}
 
-	// 检测浏览器是否支持 gzip 解压缩
+	// 檢測瀏覽器是否支援 gzip 解壓縮
 	function supportsGzip() {
-		// 检查是否支持 gzip 解压缩
-		// 现代浏览器会自动处理 Content-Encoding: gzip 头
+		// 檢查是否支援 gzip 解壓縮
+		// 現代瀏覽器會自動處理 Content-Encoding: gzip 頭
 		if (typeof window !== 'undefined' && window.navigator) {
-			// 检查是否支持 fetch 和 ArrayBuffer
+			// 檢查是否支援 fetch 和 ArrayBuffer
 			return typeof fetch === 'function' && typeof ArrayBuffer !== 'undefined';
 		}
 		return false;
 	}
 
 	Module.locateFile = function(path, prefix) {
-		// 如果是 wasm 文件，检查是否应该使用压缩版本
+		// 如果是 wasm 檔案，檢查是否應該使用壓縮版本
 		// if (path.endsWith('.wasm')) {
 			// const basePath = path.replace('.wasm', '');
 	    // if (supportsGzip()) {
-			// 	// 使用 gzip 压缩版本作为备选
+			// 	// 使用 gzip 壓縮版本作為備選
 			// 	return prefix + basePath + '.wasm.gz' + suffix;
 			// }
       // if (supportsBrotli()) {
-			// 	// 使用 brotli 压缩版本作为备选
+			// 	// 使用 brotli 壓縮版本作為備選
 			// 	return prefix + basePath + '.wasm.br' + suffix;
 			// }
 		// }
@@ -544,11 +544,11 @@ function getBinaryPromise(binaryFile) {
     if (typeof fetch == 'function'
       && !isFileURI(binaryFile)
     ) {
-      // 检查是否是压缩文件
+      // 檢查是否是壓縮檔案
       const isBrotliFile = binaryFile.includes('.br');
       const isGzipFile = binaryFile.includes('.gz');
       const fetchOptions = { 
-        // 对于压缩文件，确保请求头正确
+        // 對於壓縮檔案，確保請求頭正確
         headers: isBrotliFile ? {
           'Accept-Encoding': 'br'
         } : isGzipFile ? {
@@ -603,11 +603,11 @@ function instantiateAsync(binary, binaryFile, imports, callback) {
       !ENVIRONMENT_IS_NODE &&
       typeof fetch == 'function') {
     
-    // 检查是否是压缩文件
+    // 檢查是否是壓縮檔案
     const isBrotliFile = binaryFile.includes('.br');
     const isGzipFile = binaryFile.includes('.gz');
     const fetchOptions = { 
-      // 对于压缩文件，确保请求头正确
+      // 對於壓縮檔案，確保請求頭正確
       headers: isBrotliFile ? {
         'Accept-Encoding': 'br'
       } : isGzipFile ? {
