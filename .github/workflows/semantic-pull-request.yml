@@ -9,7 +9,7 @@ on:
 
 jobs:
   main:
-    if: github.repository == 'ranuts/document'
+    if: github.repository == 'anomixer/document'
     runs-on: ubuntu-latest
     name: Semantic Pull Request
     steps:

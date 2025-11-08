@@ -6,7 +6,7 @@ on:
     branches: [main]
 jobs:
   lint:
-    if: github.repository == 'ranuts/document'
+    if: github.repository == 'anomixer/document'
     timeout-minutes: 30
     runs-on: ${{ matrix.os }}
     strategy:
