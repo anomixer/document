@@ -1,22 +1,22 @@
 # OnlyOffice Web
 
 <p align="center">
-  <a href="https://github.com/ranuts/document/actions/workflows/ci.yml">
-    <img src="https://github.com/ranuts/document/actions/workflows/ci.yml/badge.svg" alt="CI Status">
+  <a href="https://github.com/anomixer/document/actions/workflows/ci.yml">
+    <img src="https://github.com/anomixer/document/actions/workflows/ci.yml/badge.svg" alt="CI Status">
   </a>
-  <a href="https://github.com/ranuts/document/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/ranuts/document" alt="授权许可">
+  <a href="https://github.com/anomixer/document/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/anomixer/document" alt="授权许可">
   </a>
-  <a href="https://github.com/ranuts/document/releases">
-    <img src="https://img.shields.io/github/v/release/ranuts/document" alt="版本">
+  <a href="https://github.com/anomixer/document/releases">
+    <img src="https://img.shields.io/github/v/release/anomixer/document" alt="版本">
   </a>
-  <a href="https://edit.chaxus.com/">
+  <a href="https://document26.pages.dev/">
     <img src="https://img.shields.io/badge/在线-体验-brightgreen" alt="在线体验">
   </a>
 </p>
 
 <p align="center">
-  <a href="readme.md">English</a> | <b>中文</b>
+  <a href="readme.md">English</a> | <b>简体中文</b> | <a href="readme.zh-tw.md">繁體中文</a>
 </p>
 
 基于 OnlyOffice 的隐私优先浏览器文档编辑器。直接在浏览器中编辑 DOCX、XLSX、PPTX、CSV 文件——无需服务器、无需上传、无需注册账号。
@@ -37,18 +37,20 @@
 
 ## 🚀 快速开始
 
-**在线体验：** [edit.chaxus.com](https://edit.chaxus.com/)
+**在线体验：** [document26.pages.dev](https://document26.pages.dev/)
 
 **Docker 运行：**
 
 ```bash
-docker run -d --name document -p 8080:80 ghcr.io/ranuts/document:latest
+docker run -d --name document -p 8080:80 ghcr.io/anomixer/document:latest
 ```
+
+然后用浏览器访问 <http://localhost:8080>。
 
 **本地开发：**
 
 ```bash
-git clone https://github.com/ranuts/document.git
+git clone https://github.com/anomixer/document.git
 cd document
 pnpm install
 pnpm run dev
@@ -64,6 +66,18 @@ pnpm run dev
 2. 通过 URL 参数传入：`?src=https://example.com/document.docx`
 
 > 远程 URL 需支持 CORS。
+
+### 界面语言
+
+界面提供 **英文（en）**、**中文简体（zh）** 和 **中文繁体（zh-TW）** 三种语言。
+
+请先在首页门户选择所需语言（语言切换器），然后打开编辑器 — 该选择会作用于当前编辑器以及随后创建或打开的任意文件（DOCX、XLSX、PPTX 等，通过 `?new=` 或 `?src=`）。也可通过 `locale` 参数强制指定：
+
+- `?locale=en` → 英文
+- `?locale=zh` → 中文（简体）
+- `?locale=zh-TW` → 中文（繁体）
+
+显式选择会被保存在 `localStorage`，下次访问时优先于浏览器语言。
 
 ### URL 参数
 
@@ -127,11 +141,31 @@ window.addEventListener('message', (e) => {
 pnpm build   # 输出到 dist/
 ```
 
-### GitHub Pages
+### Cloudflare Pages（目前正式部署）
 
-推送到 `main` 分支后，内置工作流（`.github/workflows/pages-build-site.yml`）会自动构建并部署。在仓库 Settings → Pages 中将 Source 设置为 **GitHub Actions** 即可。
+本站目前使用 Cloudflare Pages 部署，每次 push `main` 後自動建置（正式網址 `document26.pages.dev`）：
 
-### 静态托管（Nginx、Vercel、Netlify、Cloudflare Pages 等）
+1. 登录 Cloudflare → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
+2. 选择 GitHub 账号与项目 `anomixer/document` → **Begin setup**
+3. 构建设置：
+   - **Project name**: `document26`（因此正式网址为 `document26.pages.dev`）
+   - **Production branch**: `main`
+   - **Build command**: `pnpm build`
+   - **Output directory**: `dist`
+4. **Save and Deploy** — Cloudflare 会自动执行 `pnpm install` 再构建
+5. 完成后即可在 `https://document26.pages.dev/` 访问；亦可自行添加 Custom domain
+
+> 注意：`bin/build.sh` 是 Linux 专用脚本，若本机为 Windows，`pnpm build` 需在 Linux/CI 环境（例如 Cloudflare、GitHub Actions）执行。
+
+### GitHub Pages 重定向
+
+本仓库还保留了一个 GitHub Pages 站点作为便捷重定向。它配置为从 `main` 分支的 `/docs` 文件夹提供服务，
+其中的 `docs/index.html` 会通过 meta-refresh + canonical 链接跳转到真实站点
+`https://document26.pages.dev/`。若 GitHub Pages 被意外重新指向 `main` 分支根目录，则会出现 404
+（根目录的 `index.html` 是 Vite 源码壳，引用了 `main` 中不存在的构建资产）。正确配置方式：
+Settings → Pages → Build and deployment → Source = **main branch / /docs folder**.
+
+### 静态托管（Nginx、Vercel、Netlify、其他 Cloudflare Pages 项目等）
 
 将 `dist/` 目录上传到任意静态托管服务，无需服务端运行时。
 
@@ -148,7 +182,7 @@ location / {
 
 ```bash
 # 基础部署
-docker run -d --name document -p 8080:80 ghcr.io/ranuts/document:latest
+docker run -d --name document -p 8080:80 ghcr.io/anomixer/document:latest
 
 # 启用 HTTPS 和基础认证
 docker run -d --name document -p 443:443 \
@@ -157,10 +191,16 @@ docker run -d --name document -p 443:443 \
   -e SERVER_HTTP2_TLS=true \
   -e SERVER_HTTP2_TLS_CERT=/ssl/cert.pem \
   -e SERVER_HTTP2_TLS_KEY=/ssl/key.pem \
-  ghcr.io/ranuts/document:latest
+  ghcr.io/anomixer/document:latest
 ```
 
 `SERVER_BASIC_AUTH` 使用 BCrypt 加密密码，加密结果中的 `$` 需替换为 `$$` 进行转义。
+
+**本地构建镜像**（若不想拉取，可自行构建）：
+
+```bash
+docker build -t ghcr.io/anomixer/document:latest .
+```
 
 ---
 

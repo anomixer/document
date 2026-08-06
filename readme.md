@@ -1,22 +1,22 @@
 # OnlyOffice Web
 
 <p align="center">
-  <a href="https://github.com/ranuts/document/actions/workflows/ci.yml">
-    <img src="https://github.com/ranuts/document/actions/workflows/ci.yml/badge.svg" alt="CI Status">
+  <a href="https://github.com/anomixer/document/actions/workflows/ci.yml">
+    <img src="https://github.com/anomixer/document/actions/workflows/ci.yml/badge.svg" alt="CI Status">
   </a>
-  <a href="https://github.com/ranuts/document/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/ranuts/document" alt="License">
+  <a href="https://github.com/anomixer/document/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/anomixer/document" alt="License">
   </a>
-  <a href="https://github.com/ranuts/document/releases">
-    <img src="https://img.shields.io/github/v/release/ranuts/document" alt="Version">
+  <a href="https://github.com/anomixer/document/releases">
+    <img src="https://img.shields.io/github/v/release/anomixer/document" alt="Version">
   </a>
-  <a href="https://edit.chaxus.com/">
+  <a href="https://document26.pages.dev/">
     <img src="https://img.shields.io/badge/Live-Demo-brightgreen" alt="Live Demo">
   </a>
 </p>
 
 <p align="center">
-  <b>English</b> | <a href="readme.zh.md">中文</a>
+  <b>English</b> | <a href="readme.zh.md">简体中文</a> | <a href="readme.zh-tw.md">繁體中文</a>
 </p>
 
 A privacy-first, browser-based document editor powered by OnlyOffice. Edit DOCX, XLSX, PPTX, and CSV files directly in your browser — no server, no uploads, no account required.
@@ -30,25 +30,27 @@ A privacy-first, browser-based document editor powered by OnlyOffice. Edit DOCX,
 - 🚀 **No server required** — pure frontend, deploy anywhere
 - 🌐 **Open from URL** — load documents via `?src=` or `?file=` parameters
 - 📦 **PWA support** — install and use offline
-- 🌍 **Multi-language** — English, Chinese, and more
+- 🌍 **Multi-language** — English, Chinese (Simplified), Chinese (Traditional)
 - 🧩 **Embeddable** — full postMessage API for iframe integration
 
 ---
 
 ## 🚀 Quick Start
 
-**Try it online:** [edit.chaxus.com](https://edit.chaxus.com/)
+**Try it online:** [document26.pages.dev](https://document26.pages.dev/)
 
 **Run with Docker:**
 
 ```bash
-docker run -d --name document -p 8080:80 ghcr.io/ranuts/document:latest
+docker run -d --name document -p 8080:80 ghcr.io/anomixer/document:latest
 ```
+
+Then open a browser and visit <http://localhost:8080>.
 
 **Run locally:**
 
 ```bash
-git clone https://github.com/ranuts/document.git
+git clone https://github.com/anomixer/document.git
 cd document
 pnpm install
 pnpm run dev
@@ -64,6 +66,20 @@ pnpm run dev
 2. Pass a URL via query parameter: `?src=https://example.com/document.docx`
 
 > Remote URLs must support CORS.
+
+### Interface language
+
+The UI is available in **English**, **Chinese (Simplified)**, and **Chinese (Traditional)**.
+
+Pick your language on the homepage portal first (language switcher), then open an editor — the choice
+sticks for that editor and for any file you create or open (DOCX, XLSX, PPTX, …) via `?new=` or `?src=`.
+You can also force it with the `locale` parameter:
+
+- `?locale=en` → English
+- `?locale=zh` → Chinese (Simplified)
+- `?locale=zh-TW` → Chinese (Traditional)
+
+An explicit choice is saved in `localStorage` and preferred over the browser's locale on your next visit.
 
 ### URL parameters
 
@@ -127,11 +143,32 @@ This is a pure static app — build once, deploy anywhere.
 pnpm build   # outputs to dist/
 ```
 
-### GitHub Pages
+### Cloudflare Pages (current production)
 
-Push to `main` and the included workflow (`.github/workflows/pages-build-site.yml`) builds and deploys automatically. Enable GitHub Pages in your repo settings and set the source to **GitHub Actions**.
+This site deploys to Cloudflare Pages (`document26.pages.dev`) automatically on every push to `main`:
 
-### Static hosting (Nginx, Vercel, Netlify, Cloudflare Pages…)
+1. Cloudflare → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
+2. Connect the `anomixer/document` GitHub repo → **Begin setup**
+3. Build settings:
+   - **Project name**: `document26` (hence the live URL `document26.pages.dev`)
+   - **Production branch**: `main`
+   - **Build command**: `pnpm build`
+   - **Output directory**: `dist`
+4. **Save and Deploy** — Cloudflare runs `pnpm install` then builds automatically.
+5. Access it at `https://document26.pages.dev/`; you can add a custom domain too.
+
+> Note: `bin/build.sh` is a Linux script — on a Windows machine run `pnpm build` inside a Linux/CI environment (Cloudflare or GitHub Actions).
+
+### GitHub Pages redirect
+
+This repo also keeps a GitHub Pages site as a convenience redirect. It is configured to serve the
+`/docs` folder of the `main` branch, whose `docs/index.html` does a meta-refresh + canonical link to the
+real site at `https://document26.pages.dev/`. If GitHub Pages were ever repointed at the `main` branch
+root it would 404 (the root `index.html` is a Vite source shell that references built assets absent
+from `main`). To point GH Pages correctly:
+Settings → Pages → Build and deployment → Source = **GitHub Actions** / **`main` branch / `/docs`** folder.
+
+### Static hosting (Nginx, Vercel, Netlify, other Cloudflare Pages projects…)
 
 Upload the contents of `dist/` to any static host. No server-side runtime needed.
 
@@ -148,7 +185,7 @@ location / {
 
 ```bash
 # Basic
-docker run -d --name document -p 8080:80 ghcr.io/ranuts/document:latest
+docker run -d --name document -p 8080:80 ghcr.io/anomixer/document:latest
 
 # With HTTPS and basic auth
 docker run -d --name document -p 443:443 \
@@ -157,10 +194,16 @@ docker run -d --name document -p 443:443 \
   -e SERVER_HTTP2_TLS=true \
   -e SERVER_HTTP2_TLS_CERT=/ssl/cert.pem \
   -e SERVER_HTTP2_TLS_KEY=/ssl/key.pem \
-  ghcr.io/ranuts/document:latest
+  ghcr.io/anomixer/document:latest
 ```
 
 `SERVER_BASIC_AUTH` uses BCrypt-hashed passwords. Replace `$` with `$$` in the hash for shell escaping.
+
+**Build the image locally** (if you prefer to build instead of pulling):
+
+```bash
+docker build -t ghcr.io/anomixer/document:latest .
+```
 
 ---
 

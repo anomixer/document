@@ -22,7 +22,12 @@ const ASSETS_TO_CACHE = ['./', './index.html', './manifest.json', './img/64.png'
 // after deploy. (Symptom: `200 OK (from disk cache)` for a deploy-coupled file long after
 // its content changed.) Network-first with `cache: 'no-cache'` is what the HTML branch already
 // does, for exactly the same reason.
-const DEPLOY_COUPLED = /^\/(?:home|landing)\.css$|^\/(?:lang-switch|onlyoffice-v7-iframe-patch)\.js$|^\/ranui-iife\//;
+// app-loader.js is the OnlyOffice editor bootstrap that picks the language bundle
+// (stock `app` for Simplified/English vs `app.zh-tw` for Traditional). Its content
+// changes with the zh-TW feature (bin/build-zh-tw.js), so serving it stale silently
+// falls back the editor to the built-in Simplified `app.js`. Tiny file — network-first.
+const DEPLOY_COUPLED =
+  /^\/(?:home|landing)\.css$|^\/(?:lang-switch|onlyoffice-v7-iframe-patch)\.js$|^\/ranui-iife\/|\/web-apps\/apps\/(?:document|spreadsheet|presentation)editor\/main\/app-loader\.js$/;
 
 const MAX_RUNTIME_ITEMS = 600;
 

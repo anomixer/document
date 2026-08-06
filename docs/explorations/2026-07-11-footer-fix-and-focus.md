@@ -22,7 +22,7 @@
 - hero 下方的 crosslink 行（"只想预览或嵌入…→ @ranui/preview"）英/中两处删除，
   对应的 `.crosslink` CSS 一并移除
 - 生态条（.eco）里的 "@ranui/preview 嵌入文件预览" 芯片删除，
-  现在只剩 edit.chaxus.com（当前站）+ ran.chaxus.com（组件库）
+  现在只剩 document26.pages.dev（当前站）+ ran.chaxus.com（组件库）
 - head 里 JSON-LD 的 `sameAs` npm 链接保留（不可见元数据，利于实体关联）
 
 ## 验证

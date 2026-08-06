@@ -1,7 +1,7 @@
 {
   "name": "document",
   "version": "1.0.0",
-  "packageManager": "pnpm@11.4.0",
+  "packageManager": "pnpm@11.20.0",
   "description": "A local web-based document editor based on OnlyOffice, allowing you to edit documents directly in your browser without server-side processing, ensuring your privacy and security.",
   "type": "module",
   "scripts": {
@@ -9,6 +9,8 @@
     "build": "sh ./bin/build.sh",
     "build:single": "node bin/bundle_single_html.js",
     "preview": "vite preview",
+    "tauri": "tauri",
+    "tauri:build": "tauri build --no-bundle",
     "tsc": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -46,16 +48,18 @@
     "type": "git",
     "url": "https://github.com/ranuts/document.git"
   },
-  "homepage": "https://edit.chaxus.com/",
+  "homepage": "https://document26.pages.dev/",
   "bugs": {
     "url": "https://github.com/ranuts/document/issues"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
+    "@tauri-apps/cli": "^2",
     "@tailwindcss/postcss": "^4.3.2",
     "@types/node": "^26.1.1",
     "@vitest/coverage-v8": "^4.1.10",
     "jsdom": "^29.1.1",
+    "opencc-js": "^1.4.1",
     "oxlint": "^1.73.0",
     "postcss": "^8.5.16",
     "prettier": "^3.9.5",

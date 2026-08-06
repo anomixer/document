@@ -1,4 +1,4 @@
-# Online Document Editor — https://edit.chaxus.com
+# Online Document Editor — https://document26.pages.dev
 # Strategy: maximize both search visibility and AI recall. Allow search engines
 # and AI crawlers alike — including AI *training* crawlers (GPTBot, ClaudeBot,
 # Google-Extended, CCBot, …) — so AI assistants both cite the editor live and
@@ -11,4 +11,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://edit.chaxus.com/sitemap.xml
+Sitemap: https://document26.pages.dev/sitemap.xml

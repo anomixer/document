@@ -95863,6 +95863,7 @@ var c_paragraphLinerule = { LINERULE_AUTO: 1, LINERULE_EXACT: 2 },
                       { value: 1058 },
                       { value: 1066 },
                       { value: 2052 },
+                      { value: 1028 },
                     ]);
                 (s.forEach(function (t) {
                   var e = Common.util.LanguageInfo.getLocalLanguageName(t.value);

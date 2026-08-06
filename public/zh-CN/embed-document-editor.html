@@ -14,10 +14,11 @@
       name="description"
       content="用一个 iframe 加 postMessage API，把 DOCX、XLSX、PPTX、CSV 编辑器嵌入你的 Web 应用。鉴权与文件都留在你的应用里——编辑器看不到你的 token。开源（AGPL-3.0）、可自托管、可白标。"
     />
-    <link rel="canonical" href="https://edit.chaxus.com/zh-CN/embed-document-editor" />
-    <link rel="alternate" hreflang="en" href="https://edit.chaxus.com/embed-document-editor" />
-    <link rel="alternate" hreflang="zh-CN" href="https://edit.chaxus.com/zh-CN/embed-document-editor" />
-    <link rel="alternate" hreflang="x-default" href="https://edit.chaxus.com/embed-document-editor" />
+    <link rel="canonical" href="https://document26.pages.dev/zh-CN/embed-document-editor" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/embed-document-editor" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/embed-document-editor" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/embed-document-editor" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/embed-document-editor" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Online Document Editor" />
@@ -26,15 +27,15 @@
       property="og:description"
       content="用一个 iframe 把 DOCX/XLSX/PPTX/CSV 编辑器嵌入你的应用。鉴权留在你的应用里，编辑器看不到 token。开源、可自托管。"
     />
-    <meta property="og:url" content="https://edit.chaxus.com/zh-CN/embed-document-editor" />
-    <meta property="og:image" content="https://edit.chaxus.com/img/pwa-512.png" />
+    <meta property="og:url" content="https://document26.pages.dev/zh-CN/embed-document-editor" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="在你的网站里嵌入文档编辑器 —— iframe + postMessage API" />
     <meta
       name="twitter:description"
       content="用一个 iframe 把 DOCX/XLSX/PPTX/CSV 编辑器嵌入你的应用。鉴权留在你的应用里，编辑器看不到 token。"
     />
-    <meta name="twitter:image" content="https://edit.chaxus.com/img/pwa-512.png" />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
 
     <script type="application/ld+json">
       {
@@ -43,7 +44,7 @@
           {
             "@type": "WebApplication",
             "name": "可嵌入文档编辑器",
-            "url": "https://edit.chaxus.com/zh-CN/embed-document-editor",
+            "url": "https://document26.pages.dev/zh-CN/embed-document-editor",
             "applicationCategory": "DeveloperApplication",
             "operatingSystem": "Any (web browser)",
             "isAccessibleForFree": true,
@@ -53,7 +54,7 @@
           {
             "@type": "SoftwareSourceCode",
             "name": "Online Document Editor",
-            "codeRepository": "https://github.com/ranuts/document",
+            "codeRepository": "https://github.com/anomixer/document",
             "programmingLanguage": "TypeScript",
             "license": "https://www.gnu.org/licenses/agpl-3.0.html"
           },
@@ -126,12 +127,12 @@
           {
             "@type": "BreadcrumbList",
             "itemListElement": [
-              { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://edit.chaxus.com/zh-CN/" },
+              { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://document26.pages.dev/zh-CN/" },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "嵌入文档编辑器",
-                "item": "https://edit.chaxus.com/zh-CN/embed-document-editor"
+                "item": "https://document26.pages.dev/zh-CN/embed-document-editor"
               }
             ]
           }
@@ -168,7 +169,7 @@
     </svg>
 
     <header class="bar">
-      <a class="brand" href="/zh-CN/"><span class="logo">D</span>文档编辑器</a>
+      <a class="brand" href="/"><span class="logo">D</span>文档编辑器</a>
       <nav>
         <span class="lang-wrap">
           <svg class="langmark" aria-hidden="true" viewBox="0 0 16 16">
@@ -180,12 +181,13 @@
               stroke-width="1.2"
             />
           </svg>
-          <r-select class="lang-select" type="text" value="zh-CN" aria-label="语言">
-            <r-option value="en" data-href="/embed-document-editor">EN</r-option>
-            <r-option value="zh-CN" data-href="/zh-CN/embed-document-editor">中文</r-option>
-          </r-select>
+          <r-select class="lang-select" type="text" value="zh-CN" aria-label="语言"
+            ><r-option value="zh-CN" data-href="/zh-CN/embed-document-editor">简体中文</r-option
+            ><r-option value="en" data-href="/embed-document-editor">EN</r-option
+            ><r-option value="zh-TW" data-href="/zh-TW/embed-document-editor">繁體中文</r-option></r-select
+          >
         </span>
-        <a href="https://github.com/ranuts/document" rel="noopener" target="_blank">
+        <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">
           <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
         </a>
       </nav>
@@ -210,7 +212,7 @@
       <h2>一个 iframe 就能接入</h2>
       <pre><code>&lt;iframe
   id="documentEditor"
-  src="https://edit.chaxus.com/?embed=1&amp;embedOrigin=https://your-app.example.com"
+  src="https://document26.pages.dev/?embed=1&amp;embedOrigin=https://your-app.example.com"
   style="width: 100%; height: 720px; border: 0"
 &gt;&lt;/iframe&gt;</code></pre>
       <p>
@@ -220,7 +222,7 @@
       <pre><code>// 打开一个你的应用已经拉取好的文件（鉴权全在你这边）
 iframe.contentWindow.postMessage(
   { id, type: 'document:open-buffer', payload: { fileName: 'report.xlsx', buffer } },
-  'https://edit.chaxus.com'
+  'https://document26.pages.dev'
 );
 
 // 要回编辑后的文件，再由你自己上传
@@ -254,8 +256,9 @@ iframe.contentWindow.postMessage({ id, type: 'document:save', payload: { targetE
       <r-card class="oss"
         ><div class="card-body">
           <strong>开源且可自托管。</strong> 基于 AGPL-3.0——读源码、自托管一份、看清边界是怎么设计的：
-          <a href="https://github.com/ranuts/document" rel="noopener">github.com/ranuts/document</a>。完整 API 参考：
-          <a href="https://github.com/ranuts/document/blob/main/docs/embed-api.zh.md" rel="noopener"
+          <a href="https://github.com/anomixer/document" rel="noopener">github.com/anomixer/document</a>。完整 API
+          参考：
+          <a href="https://github.com/anomixer/document/blob/main/docs/embed-api.zh.md" rel="noopener"
             >docs/embed-api.zh.md</a
           >。
         </div></r-card
@@ -298,7 +301,7 @@ iframe.contentWindow.postMessage({ id, type: 'document:save', payload: { targetE
         <a href="/zh-CN/private-document-editor">隐私编辑器</a>
         <a href="/zh-CN/offline-document-editor">离线</a>
         <a href="/zh-CN/edit-documents-without-account">免账号</a>
-        <a href="https://github.com/ranuts/document" rel="noopener">GitHub</a>
+        <a href="https://github.com/anomixer/document" rel="noopener">GitHub</a>
         <r-theme-switch class="theme-switch" label="主题"></r-theme-switch>
       </footer>
     </main>

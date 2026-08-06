@@ -33,6 +33,11 @@
 /ranui-iife/*
   Cache-Control: no-cache
 
+# The OnlyOffice editor bootstrap that picks the language bundle (Simplified/English app
+# vs Traditional app.zh-tw). Tiny; must revalidate so it is never stale.
+/web-apps/apps/*editor/main/app-loader.js
+  Cache-Control: no-cache
+
 # Self-hosted fonts: unhashed but they only change with a ranui release; a
 # week of browser cache with revalidation after is a fine trade.
 /ran-fonts/*

@@ -14,6 +14,13 @@ document.addEventListener('DOMContentLoaded', function () {
   select.addEventListener('change', function (event) {
     var value = event.detail && event.detail.value;
     if (!value) return;
+    // Remember the explicit choice so the homepage auto-detect (index.html)
+    // stops redirecting this visitor on their next visit.
+    if (value === 'en' || value === 'zh-CN' || value === 'zh-TW') {
+      try {
+        localStorage.setItem('ran-lang', value);
+      } catch (e) {}
+    }
     var option = select.querySelector('r-option[value="' + value + '"]');
     var href = option && option.getAttribute('data-href');
     if (href && href !== location.pathname) location.href = href;

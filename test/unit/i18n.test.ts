@@ -19,6 +19,12 @@ describe('i18n', () => {
     expect(getLanguage()).toBe(LanguageCode.ZH);
     expect(getOnlyOfficeLang()).toBe('zh-CN');
     expect(t('documentLoaded')).toBe('文档加载完成：');
+
+    setLanguage(LanguageCode.ZH_TW);
+
+    expect(getLanguage()).toBe(LanguageCode.ZH_TW);
+    expect(getOnlyOfficeLang()).toBe('zh-TW');
+    expect(t('documentLoaded')).toBe('文件載入完成：');
   });
 
   it('falls back to the key for unknown translations', () => {
@@ -41,7 +47,7 @@ describe('i18n', () => {
       'agentStopped',
       'agentToolCallPrefix',
     ] as const;
-    for (const lang of [LanguageCode.EN, LanguageCode.ZH]) {
+    for (const lang of [LanguageCode.EN, LanguageCode.ZH, LanguageCode.ZH_TW]) {
       setLanguage(lang);
       for (const key of agentKeys) {
         expect(t(key), `${key} (${lang})`).toBeTruthy();

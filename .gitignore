@@ -14,6 +14,12 @@ cache
 vite.config.ts.timestamp*
 config.ts.timestamp*
 dist
+# desktop (Go server launcher - deprecated)
+dist-desktop/
+desktop/
+# tauri (Rust) build output
+src-tauri/target/
+src-tauri/gen/schemas/
 # test artifacts
 coverage/
 playwright-report/

@@ -14,10 +14,11 @@
       name="description"
       content="Embed a DOCX, XLSX, PPTX and CSV editor into your web app with one iframe and a postMessage API. Auth and files stay in your app — the editor never sees your tokens. Open source (AGPL-3.0), self-hostable, white-label."
     />
-    <link rel="canonical" href="https://edit.chaxus.com/embed-document-editor" />
-    <link rel="alternate" hreflang="en" href="https://edit.chaxus.com/embed-document-editor" />
-    <link rel="alternate" hreflang="zh-CN" href="https://edit.chaxus.com/zh-CN/embed-document-editor" />
-    <link rel="alternate" hreflang="x-default" href="https://edit.chaxus.com/embed-document-editor" />
+    <link rel="canonical" href="https://document26.pages.dev/embed-document-editor" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/embed-document-editor" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/embed-document-editor" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/embed-document-editor" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/embed-document-editor" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Online Document Editor" />
@@ -26,15 +27,15 @@
       property="og:description"
       content="Drop a DOCX/XLSX/PPTX/CSV editor into your app with one iframe. Auth stays in your app; the editor never sees your tokens. Open source & self-hostable."
     />
-    <meta property="og:url" content="https://edit.chaxus.com/embed-document-editor" />
-    <meta property="og:image" content="https://edit.chaxus.com/img/pwa-512.png" />
+    <meta property="og:url" content="https://document26.pages.dev/embed-document-editor" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Embed a Document Editor in Your Website — iframe + postMessage API" />
     <meta
       name="twitter:description"
       content="Drop a DOCX/XLSX/PPTX/CSV editor into your app with one iframe. Auth stays in your app; the editor never sees your tokens."
     />
-    <meta name="twitter:image" content="https://edit.chaxus.com/img/pwa-512.png" />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
 
     <script type="application/ld+json">
       {
@@ -43,7 +44,7 @@
           {
             "@type": "WebApplication",
             "name": "Embeddable Document Editor",
-            "url": "https://edit.chaxus.com/embed-document-editor",
+            "url": "https://document26.pages.dev/embed-document-editor",
             "applicationCategory": "DeveloperApplication",
             "operatingSystem": "Any (web browser)",
             "isAccessibleForFree": true,
@@ -53,7 +54,7 @@
           {
             "@type": "SoftwareSourceCode",
             "name": "Online Document Editor",
-            "codeRepository": "https://github.com/ranuts/document",
+            "codeRepository": "https://github.com/anomixer/document",
             "programmingLanguage": "TypeScript",
             "license": "https://www.gnu.org/licenses/agpl-3.0.html"
           },
@@ -126,12 +127,12 @@
           {
             "@type": "BreadcrumbList",
             "itemListElement": [
-              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://edit.chaxus.com/" },
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://document26.pages.dev/" },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Embed Document Editor",
-                "item": "https://edit.chaxus.com/embed-document-editor"
+                "item": "https://document26.pages.dev/embed-document-editor"
               }
             ]
           }
@@ -183,12 +184,13 @@
               stroke-width="1.2"
             />
           </svg>
-          <r-select class="lang-select" type="text" value="en" aria-label="Language">
-            <r-option value="en" data-href="/embed-document-editor">EN</r-option>
-            <r-option value="zh-CN" data-href="/zh-CN/embed-document-editor">中文</r-option>
-          </r-select>
+          <r-select class="lang-select" type="text" value="en" aria-label="Language"
+            ><r-option value="en" data-href="/embed-document-editor">EN</r-option
+            ><r-option value="zh-CN" data-href="/zh-CN/embed-document-editor">简体中文</r-option
+            ><r-option value="zh-TW" data-href="/zh-TW/embed-document-editor">繁體中文</r-option></r-select
+          >
         </span>
-        <a href="https://github.com/ranuts/document" rel="noopener" target="_blank">
+        <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">
           <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
         </a>
       </nav>
@@ -215,7 +217,7 @@
       <h2>Add it with one iframe</h2>
       <pre><code>&lt;iframe
   id="documentEditor"
-  src="https://edit.chaxus.com/?embed=1&amp;embedOrigin=https://your-app.example.com"
+  src="https://document26.pages.dev/?embed=1&amp;embedOrigin=https://your-app.example.com"
   style="width: 100%; height: 720px; border: 0"
 &gt;&lt;/iframe&gt;</code></pre>
       <p>
@@ -225,7 +227,7 @@
       <pre><code>// open a file your app already fetched (auth stays with you)
 iframe.contentWindow.postMessage(
   { id, type: 'document:open-buffer', payload: { fileName: 'report.xlsx', buffer } },
-  'https://edit.chaxus.com'
+  'https://document26.pages.dev'
 );
 
 // ask for the edited file back, then upload it yourself
@@ -262,9 +264,10 @@ iframe.contentWindow.postMessage({ id, type: 'document:save', payload: { targetE
         ><div class="card-body">
           <strong>Open source &amp; self-hostable.</strong> Under AGPL-3.0 — read the code, run your own copy, and see
           exactly how the boundary works:
-          <a href="https://github.com/ranuts/document" rel="noopener">github.com/ranuts/document</a>. Full API
+          <a href="https://github.com/anomixer/document" rel="noopener">github.com/anomixer/document</a>. Full API
           reference:
-          <a href="https://github.com/ranuts/document/blob/main/docs/embed-api.md" rel="noopener">docs/embed-api.md</a>.
+          <a href="https://github.com/anomixer/document/blob/main/docs/embed-api.md" rel="noopener">docs/embed-api.md</a
+          >.
         </div></r-card
       >
 
@@ -308,7 +311,7 @@ iframe.contentWindow.postMessage({ id, type: 'document:save', payload: { targetE
         <a href="/private-document-editor">Private editor</a>
         <a href="/offline-document-editor">Offline</a>
         <a href="/edit-documents-without-account">No account</a>
-        <a href="https://github.com/ranuts/document" rel="noopener">GitHub</a>
+        <a href="https://github.com/anomixer/document" rel="noopener">GitHub</a>
         <r-theme-switch class="theme-switch" label="Theme"></r-theme-switch>
       </footer>
     </main>

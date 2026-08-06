@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/img/64.png" rel="shortcut icon" />
+    <link rel="icon" type="image/png" href="/img/64.png" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+
+    <title>隱私文件編輯器——檔案始終留在你的裝置上</title>
+    <meta
+      name="description"
+      content="一個把檔案留在本地的隱私文件編輯器。在瀏覽器中 100% 本地編輯 Word（DOCX）、Excel（XLSX）、PowerPoint（PPTX）和 CSV——不上傳任何檔案。免費、開源（AGPL-3.0）、支援離線。"
+    />
+    <link rel="canonical" href="https://document26.pages.dev/zh-TW/private-document-editor" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/private-document-editor" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/private-document-editor" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/private-document-editor" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/private-document-editor" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Online Document Editor" />
+    <meta property="og:title" content="隱私文件編輯器——檔案始終留在你的裝置上" />
+    <meta
+      property="og:description"
+      content="在瀏覽器中 100% 本地編輯 DOCX、XLSX、PPTX 和 CSV——不上傳、無需賬號。免費、開源。"
+    />
+    <meta property="og:url" content="https://document26.pages.dev/zh-TW/private-document-editor" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="隱私文件編輯器——檔案始終留在你的裝置上" />
+    <meta
+      name="twitter:description"
+      content="在瀏覽器中 100% 本地編輯 DOCX、XLSX、PPTX 和 CSV——不上傳、無需賬號。免費、開源。"
+    />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "Online Document Editor",
+            "url": "https://document26.pages.dev/zh-TW/private-document-editor",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Any (web browser)",
+            "isAccessibleForFree": true,
+            "description": "一個 100% 在瀏覽器本地執行的隱私文件編輯器。編輯 DOCX、XLSX、PPTX 和 CSV，不上傳任何內容——檔案始終留在你的裝置上。",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "Online Document Editor",
+            "codeRepository": "https://github.com/anomixer/document",
+            "programmingLanguage": "TypeScript",
+            "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "為什麼說這是一個隱私文件編輯器？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "你的檔案完全在自己的瀏覽器裡通過 WebAssembly 開啟和編輯。文件永遠不會上傳到伺服器，因此全程都留在你的裝置上。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "我的檔案會被上傳嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "不會。所有處理都是 100% 在客戶端完成。你的 DOCX、XLSX、PPTX 或 CSV 檔案在本地讀取和寫入，永遠不會離開你的裝置。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "要保持檔案私密需要賬號嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "無需賬號、無需註冊、無需登入。開啟編輯器即可開始工作，也不會有任何雲端副本需要管理。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "我能核實沒有任何上傳嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。整個編輯器在 AGPL-3.0 協議下開源，你可以閱讀程式碼、檢視網路請求，或者自託管一份自己的副本。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "沒有網路連線時還能用嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。它是可安裝的 PWA，載入後可完全離線使用，讓你的編輯過程始終在本機內完成。"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "首頁", "item": "https://document26.pages.dev/" },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "隱私文件編輯器",
+                "item": "https://document26.pages.dev/zh-TW/private-document-editor"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <!-- No-flash theme restore: apply a forced light/dark before first paint so a
+         dark-mode visitor never sees a white flash. 'system' leaves the attributes
+         off and the token layer's media query decides. Kept inline and tiny. -->
+    <script>
+      try {
+        var t = localStorage.getItem('ran-theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.setAttribute('data-ran-theme', t);
+          document.documentElement.setAttribute('theme', t);
+        }
+      } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/ran-fonts/fonts.css" />
+    <link rel="stylesheet" href="/ran-tokens.css" />
+    <link rel="stylesheet" href="/landing.css" />
+    <script src="/ranui-iife/button.iife.js" defer></script>
+    <script src="/ranui-iife/card.iife.js" defer></script>
+    <script src="/ranui-iife/select.iife.js" defer></script>
+    <script src="/ranui-iife/theme-switch.iife.js" defer></script>
+    <script src="/lang-switch.js" defer></script>
+  </head>
+
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="gh-mark" viewBox="0 0 16 16">
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+        />
+      </symbol>
+    </svg>
+
+    <header class="bar">
+      <a class="brand" href="/"><span class="logo">文</span>文件編輯器</a>
+      <nav>
+        <span class="lang-wrap">
+          <svg class="langmark" aria-hidden="true" viewBox="0 0 16 16">
+            <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M1.75 8h12.5M8 1.75c1.7 1.8 2.6 3.9 2.6 6.25S9.7 12.45 8 14.25M8 1.75c-1.7 1.8-2.6 3.9-2.6 6.25s.9 4.45 2.6 6.25"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+          <r-select class="lang-select" type="text" value="zh-TW" aria-label="语言"
+            ><r-option value="zh-TW" data-href="/zh-TW/private-document-editor">繁體中文</r-option
+            ><r-option value="en" data-href="/private-document-editor">EN</r-option
+            ><r-option value="zh-CN" data-href="/zh-CN/private-document-editor">简体中文</r-option></r-select
+          >
+        </span>
+        <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">
+          <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
+        </a>
+      </nav>
+    </header>
+
+    <main class="wrap">
+      <p class="eyebrow">隱私 · 100% 本地</p>
+      <h1>在找一個能保護檔案隱私的文件編輯器？</h1>
+      <p class="lead">
+        直接在瀏覽器裡編輯 Word（DOCX）、Excel（XLSX）、PowerPoint（PPTX）和 CSV
+        檔案——檔案從頭到尾都留在你自己的裝置上。不上傳任何內容，也無需建立賬號。
+      </p>
+
+      <a class="cta" href="/"><r-button type="primary">開啟編輯器 →</r-button></a>
+
+      <p>
+        這裡的隱私很簡單也很直接：你開啟的文件永遠不會離開你的電腦。一切都通過 WebAssembly
+        在瀏覽器本地執行，因此開啟、編輯和下載都在你的機器上完成。沒有伺服器端的檔案副本需要擔心，也沒有云端資料夾把它同步到別處。
+      </p>
+
+      <p>
+        這讓它很適合合同、財務表格、醫療記錄、人事檔案，或任何你不想交給第三方的內容。你得到的是一個完整還原的編輯器——由
+        OnlyOffice 引擎驅動，字型、表格、公式和排版都會被保留——卻不必先把檔案傳出去。
+      </p>
+
+      <h2>你可以做什麼</h2>
+      <ul>
+        <li><strong>每個檔案都留在本機</strong>——100% 客戶端處理，你的文件永遠不會離開你的機器。</li>
+        <li><strong>編輯常見格式</strong>——DOCX、XLSX、PPTX 和 CSV，完整保留排版。</li>
+        <li><strong>省去賬號</strong>——無需註冊、無需登入、無需任何登記。</li>
+        <li><strong>離線可用</strong>——可作為 PWA 安裝，無網路也能使用。</li>
+        <li><strong>可核實隱私承諾</strong>——閱讀開原始碼，或自託管一份自己的副本。</li>
+      </ul>
+
+      <h2>如何使用</h2>
+      <ol>
+        <li>開啟編輯器——沒有註冊頁面擋在中間。</li>
+        <li>從你的裝置中選擇一個 DOCX、XLSX、PPTX 或 CSV 檔案。</li>
+        <li>在本地閱讀和編輯；檔案在你的瀏覽器中處理，而不是在伺服器上。</li>
+        <li>完成後把修改重新下載回你的裝置。</li>
+      </ol>
+
+      <r-card class="oss"
+        ><div class="card-body">
+          <strong>開源且可自託管。</strong> 基於 AGPL-3.0
+          協議，你不必只聽我們說——閱讀程式碼即可確認檔案確實留在你的裝置上，或者執行你自己的副本：
+          <a href="https://github.com/anomixer/document" rel="noopener">github.com/anomixer/document</a>。
+        </div></r-card
+      >
+
+      <h2 class="faq">常見問題</h2>
+      <div class="faq">
+        <h3>為什麼說這是一個隱私文件編輯器？</h3>
+        <p>
+          你的檔案完全在自己的瀏覽器裡通過 WebAssembly 開啟和編輯。文件永遠不會上傳到伺服器，因此全程都留在你的裝置上。
+        </p>
+        <h3>我的檔案會被上傳嗎？</h3>
+        <p>
+          不會。所有處理都是 100% 在客戶端完成。你的 DOCX、XLSX、PPTX 或 CSV
+          檔案在本地讀取和寫入，永遠不會離開你的裝置。
+        </p>
+        <h3>要保持檔案私密需要賬號嗎？</h3>
+        <p>無需賬號、無需註冊、無需登入。開啟編輯器即可開始工作，也不會有任何雲端副本需要管理。</p>
+        <h3>我能核實沒有任何上傳嗎？</h3>
+        <p>可以。整個編輯器在 AGPL-3.0 協議下開源，你可以閱讀程式碼、檢視網路請求，或者自託管一份自己的副本。</p>
+        <h3>沒有網路連線時還能用嗎？</h3>
+        <p>可以。它是可安裝的 PWA，載入後可完全離線使用，讓你的編輯過程始終在本機內完成。</p>
+      </div>
+
+      <footer>
+        <a href="/zh-TW/">開啟編輯器</a>
+        <a href="/zh-TW/open/docx">開啟 DOCX</a>
+        <a href="/zh-TW/open/xlsx">開啟 XLSX</a>
+        <a href="/zh-TW/open/pptx">開啟 PPTX</a>
+        <a href="/zh-TW/convert/xlsx-to-csv">XLSX 轉 CSV</a>
+        <a href="/zh-TW/convert/csv-to-xlsx">CSV 轉 XLSX</a>
+        <a href="/zh-TW/no-signup-document-editor">免註冊</a>
+        <a href="/zh-TW/offline-document-editor">離線</a>
+        <a href="/zh-TW/edit-documents-without-account">免賬號</a>
+        <a href="/zh-TW/embed-document-editor">Embed API</a>
+        <a href="https://github.com/anomixer/document" rel="noopener">GitHub</a>
+        <r-theme-switch class="theme-switch" label="主題"></r-theme-switch>
+      </footer>
+    </main>
+  </body>
+</html>

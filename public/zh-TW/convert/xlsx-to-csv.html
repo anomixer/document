@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/img/64.png" rel="shortcut icon" />
+    <link rel="icon" type="image/png" href="/img/64.png" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+
+    <title>在瀏覽器中把 XLSX 轉成 CSV——免費、不傳伺服器</title>
+    <meta
+      name="description"
+      content="完全在瀏覽器中把 XLSX（Excel）檔案轉成 CSV——開啟後匯出為 CSV。免費、開源、檔案留在本地、支援離線。無需 Excel，也無需賬號。"
+    />
+    <link rel="canonical" href="https://document26.pages.dev/zh-TW/convert/xlsx-to-csv" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/convert/xlsx-to-csv" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/convert/xlsx-to-csv" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/convert/xlsx-to-csv" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/convert/xlsx-to-csv" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Online Document Editor" />
+    <meta property="og:title" content="在瀏覽器中把 XLSX 轉成 CSV——免費、不傳伺服器" />
+    <meta property="og:description" content="在瀏覽器中把 XLSX 轉成 CSV——檔案留在本地，無需 Excel，無需賬號。開源。" />
+    <meta property="og:url" content="https://document26.pages.dev/zh-TW/convert/xlsx-to-csv" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="在瀏覽器中把 XLSX 轉成 CSV——免費、不傳伺服器" />
+    <meta name="twitter:description" content="在瀏覽器中把 XLSX 轉成 CSV——檔案留在本地，無需 Excel，無需賬號。開源。" />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "Online Document Editor",
+            "url": "https://document26.pages.dev/zh-TW/convert/xlsx-to-csv",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Any (web browser)",
+            "isAccessibleForFree": true,
+            "description": "在瀏覽器中把 XLSX 轉成 CSV：開啟表格並匯出為 CSV——不傳伺服器、無需賬號。",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "Online Document Editor",
+            "codeRepository": "https://github.com/anomixer/document",
+            "programmingLanguage": "TypeScript",
+            "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "在這裡怎麼把 XLSX 轉成 CSV？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "在編輯器中開啟你的 XLSX 檔案，然後使用「下載為 / 另存為 CSV」。轉換在你的瀏覽器中完成。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "轉換時我的檔案會被上傳嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "不會。與大多數線上轉換器不同，這個轉換完全在你的瀏覽器中進行，因此你的表格永遠不會被上傳到伺服器。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "我需要 Excel 或賬號嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "不需要。無需 Microsoft Excel、無需 365 訂閱，也無需註冊。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "我能把 CSV 再轉回 XLSX 嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。開啟 CSV 並匯出為 XLSX——參見 CSV 轉 XLSX 頁面。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "會匯出哪個工作表為 CSV？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "CSV 是單表格式，因此會匯出當前活動的工作表。先開啟你想要的工作表，然後另存為 CSV。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "匯出的是公式還是它們的值？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "CSV 儲存純數值，因此公式會以其計算結果寫出，而不是公式文本本身。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "這個轉換器能離線使用嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。頁面載入完成後它就是一個可安裝的 PWA，因此在沒有網路連線時轉換依然可用。"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "HowTo",
+            "name": "如何在瀏覽器中把 XLSX 轉成 CSV",
+            "step": [
+              {
+                "@type": "HowToStep",
+                "name": "開啟編輯器",
+                "text": "點選「開啟你的 XLSX」，在瀏覽器中啟動編輯器。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "選擇檔案",
+                "text": "從你的裝置中選擇 .xlsx 檔案，或將它拖放到頁面上。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "另存為 CSV",
+                "text": "選擇「下載為 / 另存為」，並選中 CSV。OnlyOffice x2t 引擎會在本地完成轉換。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "儲存檔案",
+                "text": "CSV 在你的裝置上生成並下載——不會上傳到任何伺服器。"
+              }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "首頁", "item": "https://document26.pages.dev/" },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "XLSX 轉 CSV",
+                "item": "https://document26.pages.dev/zh-TW/convert/xlsx-to-csv"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <!-- No-flash theme restore: apply a forced light/dark before first paint so a
+         dark-mode visitor never sees a white flash. 'system' leaves the attributes
+         off and the token layer's media query decides. Kept inline and tiny. -->
+    <script>
+      try {
+        var t = localStorage.getItem('ran-theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.setAttribute('data-ran-theme', t);
+          document.documentElement.setAttribute('theme', t);
+        }
+      } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/ran-fonts/fonts.css" />
+    <link rel="stylesheet" href="/ran-tokens.css" />
+    <link rel="stylesheet" href="/landing.css" />
+    <script src="/ranui-iife/button.iife.js" defer></script>
+    <script src="/ranui-iife/card.iife.js" defer></script>
+    <script src="/ranui-iife/select.iife.js" defer></script>
+    <script src="/ranui-iife/theme-switch.iife.js" defer></script>
+    <script src="/lang-switch.js" defer></script>
+  </head>
+
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="gh-mark" viewBox="0 0 16 16">
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+        />
+      </symbol>
+    </svg>
+
+    <header class="bar">
+      <a class="brand" href="/"><span class="logo">文</span>文件編輯器</a>
+      <nav>
+        <span class="lang-wrap">
+          <svg class="langmark" aria-hidden="true" viewBox="0 0 16 16">
+            <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M1.75 8h12.5M8 1.75c1.7 1.8 2.6 3.9 2.6 6.25S9.7 12.45 8 14.25M8 1.75c-1.7 1.8-2.6 3.9-2.6 6.25s.9 4.45 2.6 6.25"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+          <r-select class="lang-select" type="text" value="zh-TW" aria-label="语言"
+            ><r-option value="zh-TW" data-href="/zh-TW/convert/xlsx-to-csv">繁體中文</r-option
+            ><r-option value="en" data-href="/convert/xlsx-to-csv">EN</r-option
+            ><r-option value="zh-CN" data-href="/zh-CN/convert/xlsx-to-csv">简体中文</r-option></r-select
+          >
+        </span>
+        <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">
+          <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
+        </a>
+      </nav>
+    </header>
+
+    <main class="wrap">
+      <p class="eyebrow">轉換 · .xlsx → .csv</p>
+      <h1>在瀏覽器中把 XLSX 轉成 CSV</h1>
+      <p class="lead">
+        把 Excel 的 <strong>.xlsx</strong> 檔案轉成純 <strong>.csv</strong>——全程在瀏覽器本地完成，不經過任何伺服器。
+      </p>
+
+      <a class="cta" href="/?locale=zh-TW&amp;new=docx"><r-button type="primary">開啟你的 XLSX →</r-button></a>
+
+      <h2>如何操作</h2>
+      <ol>
+        <li>點選<strong>開啟你的 XLSX</strong>，在瀏覽器中啟動編輯器。</li>
+        <li>從你的裝置中選擇 <strong>.xlsx</strong> 檔案，或將它拖放到頁面上。</li>
+        <li>選擇<strong>下載為 / 另存為</strong>，並選中 <strong>CSV</strong>。</li>
+        <li>CSV 在你的裝置上生成並下載——檔案留在本地。</li>
+      </ol>
+
+      <p>
+        大多數"XLSX 轉 CSV"轉換器都會先把你的表格上傳到它們的伺服器。這個不會：它用 OnlyOffice
+        引擎在本地開啟檔案，因此你的資料保持私密。無需 Excel，無需賬號，支援離線。
+      </p>
+
+      <p>
+        轉換本身由編譯為 WebAssembly 的 OnlyOffice x2t 引擎完成。它面向常見的辦公和文本格式——Word、Excel 和
+        PowerPoint，外加 PDF、TXT、HTML 和 CSV——因此非常適合把表格轉成便攜的
+        CSV。由於一切都在瀏覽器標籤頁內執行，沒有上傳佇列，沒有伺服器施加的大小上限，你的資料也不會經過網路。請注意，CSV
+        是一種扁平的單表格式：會匯出當前活動的工作表，每個公式都會以其計算結果寫出。
+      </p>
+
+      <p>
+        CSV
+        是資料領域的"最大公約數"格式：幾乎所有資料庫、分析工具和程式語言都能匯入它。當你需要把報表餵給另一個系統、在不傳送整個工作簿的情況下分享表格資料，或者把檔案精簡為純數值時，在這裡把表格匯出為
+        CSV 就很有用。而且由於匯出在你的裝置上執行，即便是敏感資料——客戶名單、財務匯出——也始終保持私密。
+      </p>
+
+      <r-card class="oss"
+        ><div class="card-body">
+          <strong>開源且可自託管。</strong> 基於 AGPL-3.0 協議——你可以核實檔案確實沒有被上傳，或者執行你自己的副本：
+          <a href="https://github.com/anomixer/document" rel="noopener">github.com/anomixer/document</a>。
+        </div></r-card
+      >
+
+      <h2 class="faq">常見問題</h2>
+      <div class="faq">
+        <h3>在這裡怎麼把 XLSX 轉成 CSV？</h3>
+        <p>在編輯器中開啟 XLSX，然後使用「下載為 / 另存為 CSV」— 轉換在你的瀏覽器中執行。</p>
+        <h3>轉換時我的檔案會被上傳嗎？</h3>
+        <p>不會。它完全在你的瀏覽器中執行，因此你的表格永遠不會被上傳。</p>
+        <h3>我需要 Excel 或賬號嗎？</h3>
+        <p>無需 Excel、無需 365 訂閱，也無需註冊。</p>
+        <h3>我能把 CSV 再轉回 XLSX 嗎？</h3>
+        <p>可以——參見 <a href="/zh-TW/convert/csv-to-xlsx">CSV 轉 XLSX</a>。</p>
+        <h3>會匯出哪個工作表為 CSV？</h3>
+        <p>CSV 只儲存單個表格，因此會匯出當前活動的工作表。先開啟你想要的工作表，然後另存為 CSV。</p>
+        <h3>匯出的是公式還是它們的值？</h3>
+        <p>CSV 儲存純數值，因此公式會以其計算結果寫出。</p>
+        <h3>這個轉換器能離線使用嗎？</h3>
+        <p>可以。載入後它就是一個可安裝的 PWA，因此在沒有網路時依然可用。</p>
+      </div>
+
+      <footer>
+        <a href="/zh-TW/">開啟編輯器</a>
+        <a href="/zh-TW/open/docx">開啟 DOCX</a>
+        <a href="/zh-TW/open/xlsx">開啟 XLSX</a>
+        <a href="/zh-TW/open/pptx">開啟 PPTX</a>
+        <a href="/zh-TW/convert/csv-to-xlsx">CSV 轉 XLSX</a>
+        <a href="/zh-TW/no-signup-document-editor">免註冊</a>
+        <a href="/zh-TW/private-document-editor">隱私編輯器</a>
+        <a href="/zh-TW/offline-document-editor">離線</a>
+        <a href="/zh-TW/edit-documents-without-account">免賬號</a>
+        <a href="/zh-TW/embed-document-editor">Embed API</a>
+        <a href="https://github.com/anomixer/document" rel="noopener">GitHub</a>
+        <r-theme-switch class="theme-switch" label="主題"></r-theme-switch>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/img/64.png" rel="shortcut icon" />
+    <link rel="icon" type="image/png" href="/img/64.png" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+
+    <title>在你的網站裡嵌入文件編輯器 —— iframe + postMessage API</title>
+    <meta
+      name="description"
+      content="用一個 iframe 加 postMessage API，把 DOCX、XLSX、PPTX、CSV 編輯器嵌入你的 Web 應用。鑑權與檔案都留在你的應用裡——編輯器看不到你的 token。開源（AGPL-3.0）、可自託管、可白標。"
+    />
+    <link rel="canonical" href="https://document26.pages.dev/zh-TW/embed-document-editor" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/embed-document-editor" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/embed-document-editor" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/embed-document-editor" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/embed-document-editor" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Online Document Editor" />
+    <meta property="og:title" content="在你的網站裡嵌入文件編輯器 —— iframe + postMessage API" />
+    <meta
+      property="og:description"
+      content="用一個 iframe 把 DOCX/XLSX/PPTX/CSV 編輯器嵌入你的應用。鑑權留在你的應用裡，編輯器看不到 token。開源、可自託管。"
+    />
+    <meta property="og:url" content="https://document26.pages.dev/zh-TW/embed-document-editor" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="在你的網站裡嵌入文件編輯器 —— iframe + postMessage API" />
+    <meta
+      name="twitter:description"
+      content="用一個 iframe 把 DOCX/XLSX/PPTX/CSV 編輯器嵌入你的應用。鑑權留在你的應用裡，編輯器看不到 token。"
+    />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "可嵌入文件編輯器",
+            "url": "https://document26.pages.dev/zh-TW/embed-document-editor",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Any (web browser)",
+            "isAccessibleForFree": true,
+            "description": "可嵌入的 DOCX/XLSX/PPTX/CSV 編輯器：用一個 iframe 嵌入任意 Web 應用，用 postMessage API 驅動。鑑權與檔案訪問都留在父應用裡。",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "Online Document Editor",
+            "codeRepository": "https://github.com/anomixer/document",
+            "programmingLanguage": "TypeScript",
+            "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+          },
+          {
+            "@type": "HowTo",
+            "name": "如何在網站裡嵌入文件編輯器",
+            "step": [
+              {
+                "@type": "HowToStep",
+                "name": "加入 iframe",
+                "text": "加入一個指向編輯器、帶 ?embed=1 的 iframe，按你的佈局設定尺寸。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "開啟文件",
+                "text": "編輯器發出 document:ready 後，用 postMessage 傳送 document:open-url、open-file 或 open-buffer 命令。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "儲存並上傳",
+                "text": "傳送 document:save，編輯器通過 document:saved 返回編輯後的檔案，由你的應用用自己的憑據上傳。"
+              }
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "怎麼嵌入這個文件編輯器？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "加入一個指向編輯器、帶 ?embed=1 的 iframe，再用 postMessage API 驅動它開啟與儲存文件。可執行 demo 在 /embed-demo.html。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "編輯器會看到我使用者的鑑權 token 嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "不會。推薦模式讓鑑權、檔案拉取與上傳都留在你的應用裡——你的應用用自己的憑據拉取檔案、把二進位制傳給編輯器，token 和 cookie 永遠不會進入 iframe。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "嵌入的編輯器支援哪些檔案格式？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "DOCX、XLSX、PPTX 和 CSV。文件用 OnlyOffice WebAssembly 引擎在客戶端編輯，儲存命令可匯出為 XLSX、DOCX、PPTX 或 CSV。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "可以自託管或白標使用嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。它以 AGPL-3.0 開源，且是純靜態檔案，你可以自託管一份、在自己的域名下嵌入。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "怎麼限制哪個站點能和編輯器通訊？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "在 iframe URL 上加 embedOrigin 把訊息鎖定到指定 origin，並在你自己的訊息處理裡校驗 event.origin。"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "首頁", "item": "https://document26.pages.dev/zh-TW/" },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "嵌入文件編輯器",
+                "item": "https://document26.pages.dev/zh-TW/embed-document-editor"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <script>
+      try {
+        var t = localStorage.getItem('ran-theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.setAttribute('data-ran-theme', t);
+          document.documentElement.setAttribute('theme', t);
+        }
+      } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/ran-fonts/fonts.css" />
+    <link rel="stylesheet" href="/ran-tokens.css" />
+    <link rel="stylesheet" href="/landing.css" />
+    <script src="/ranui-iife/button.iife.js" defer></script>
+    <script src="/ranui-iife/card.iife.js" defer></script>
+    <script src="/ranui-iife/select.iife.js" defer></script>
+    <script src="/ranui-iife/theme-switch.iife.js" defer></script>
+    <script src="/lang-switch.js" defer></script>
+  </head>
+
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="gh-mark" viewBox="0 0 16 16">
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+        />
+      </symbol>
+    </svg>
+
+    <header class="bar">
+      <a class="brand" href="/"><span class="logo">D</span>文件編輯器</a>
+      <nav>
+        <span class="lang-wrap">
+          <svg class="langmark" aria-hidden="true" viewBox="0 0 16 16">
+            <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M1.75 8h12.5M8 1.75c1.7 1.8 2.6 3.9 2.6 6.25S9.7 12.45 8 14.25M8 1.75c-1.7 1.8-2.6 3.9-2.6 6.25s.9 4.45 2.6 6.25"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+          <r-select class="lang-select" type="text" value="zh-TW" aria-label="语言"
+            ><r-option value="zh-TW" data-href="/zh-TW/embed-document-editor">繁體中文</r-option
+            ><r-option value="en" data-href="/embed-document-editor">EN</r-option
+            ><r-option value="zh-CN" data-href="/zh-CN/embed-document-editor">简体中文</r-option></r-select
+          >
+        </span>
+        <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">
+          <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
+        </a>
+      </nav>
+    </header>
+
+    <main class="wrap">
+      <p class="eyebrow">開發者 · 嵌入</p>
+      <h1>把文件編輯器嵌入你的 Web 應用</h1>
+      <p class="lead">
+        用一個 iframe 加 <strong>postMessage</strong> API，把 <strong>DOCX、XLSX、PPTX、CSV</strong>
+        編輯器加進你的產品。鑑權、檔案訪問和上傳都留在你的應用裡——編輯器只負責編輯，永遠看不到使用者的 token。
+      </p>
+
+      <a class="cta" href="/embed-demo.html"><r-button type="primary">開啟線上 demo →</r-button></a>
+
+      <p>
+        編輯器完全在瀏覽器裡用 OnlyOffice WebAssembly
+        引擎執行，文件在客戶端渲染和編輯——你不需要部署文件伺服器。推薦模式保持清晰邊界：
+        <strong>父應用負責鑑權、拉取與儲存；iframe 只負責編輯。</strong>token、cookie 和業務 API 都留在你的應用裡。
+      </p>
+
+      <h2>一個 iframe 就能接入</h2>
+      <pre><code>&lt;iframe
+  id="documentEditor"
+  src="https://document26.pages.dev/?embed=1&amp;embedOrigin=https://your-app.example.com"
+  style="width: 100%; height: 720px; border: 0"
+&gt;&lt;/iframe&gt;</code></pre>
+      <p>
+        然後用 <code>postMessage</code> 和它通訊。每條命令帶一個 <code>id</code> 用來匹配回覆，編輯器的每個事件都是
+        <code>document:*</code> 訊息：
+      </p>
+      <pre><code>// 開啟一個你的應用已經拉取好的檔案（鑑權全在你這邊）
+iframe.contentWindow.postMessage(
+  { id, type: 'document:open-buffer', payload: { fileName: 'report.xlsx', buffer } },
+  'https://document26.pages.dev'
+);
+
+// 要回編輯後的檔案，再由你自己上傳
+iframe.contentWindow.postMessage({ id, type: 'document:save', payload: { targetExt: 'XLSX' } }, editorOrigin);
+// → 編輯器回覆 { type: 'document:saved', payload: { fileName, file } }</code></pre>
+
+      <h2>你能得到什麼</h2>
+      <ul>
+        <li>一個 iframe + 一套小巧的 <strong>postMessage</strong> 命令/響應 API——無需安裝 SDK</li>
+        <li>從 <strong>URL、File 或 ArrayBuffer</strong> 開啟（都由你的應用用自己的憑據拉取）</li>
+        <li>儲存回 <strong>XLSX、DOCX、PPTX 或 CSV</strong>，以 <code>File</code> 返回給你的應用上傳</li>
+        <li>只讀模式、按訊息鎖定 origin（<code>embedOrigin</code>）、狀態查詢</li>
+        <li>無需部署文件伺服器——編輯 100% 是客戶端 WebAssembly</li>
+        <li>開源（AGPL-3.0）、可自託管——在你自己的域名下嵌入</li>
+      </ul>
+
+      <h2>工作原理</h2>
+      <ol>
+        <li>加入指向編輯器、帶 <code>?embed=1</code> 的 iframe，按佈局設尺寸。</li>
+        <li>
+          等 <code>document:ready</code> 事件，再發送 <code>document:open-url</code>、<code>open-file</code> 或
+          <code>open-buffer</code>。
+        </li>
+        <li>使用者就地編輯；除非你的應用主動傳送，檔案不會離開瀏覽器。</li>
+        <li>
+          傳送 <code>document:save</code>，編輯器通過
+          <code>document:saved</code> 返回編輯後的檔案，由你的應用用自己的鑑權上傳。
+        </li>
+      </ol>
+
+      <r-card class="oss"
+        ><div class="card-body">
+          <strong>開源且可自託管。</strong> 基於 AGPL-3.0——讀原始碼、自託管一份、看清邊界是怎麼設計的：
+          <a href="https://github.com/anomixer/document" rel="noopener">github.com/anomixer/document</a>。完整 API
+          參考：
+          <a href="https://github.com/anomixer/document/blob/main/docs/embed-api.zh.md" rel="noopener"
+            >docs/embed-api.zh.md</a
+          >。
+        </div></r-card
+      >
+
+      <h2 class="faq">常見問題</h2>
+      <div class="faq">
+        <h3>怎麼嵌入這個文件編輯器？</h3>
+        <p>
+          加入一個指向編輯器、帶 <code>?embed=1</code> 的 iframe，再用 postMessage API 驅動它開啟與儲存文件。可執行 demo
+          在 <a href="/embed-demo.html">/embed-demo.html</a>。
+        </p>
+        <h3>編輯器會看到我使用者的鑑權 token 嗎？</h3>
+        <p>
+          不會。鑑權、檔案拉取和上傳都留在你的應用裡——你的應用用自己的憑據拉取檔案、把二進位制傳給編輯器，token 和
+          cookie 永遠不會進入 iframe。
+        </p>
+        <h3>嵌入的編輯器支援哪些檔案格式？</h3>
+        <p>
+          DOCX、XLSX、PPTX 和 CSV，用 OnlyOffice WebAssembly 引擎在客戶端編輯。儲存命令可匯出為 XLSX、DOCX、PPTX 或
+          CSV。
+        </p>
+        <h3>可以自託管或白標使用嗎？</h3>
+        <p>可以。它以 AGPL-3.0 開源、是純靜態檔案，你可以自託管一份、在自己的域名下嵌入。</p>
+        <h3>怎麼限制哪個站點能和編輯器通訊？</h3>
+        <p>
+          在 iframe URL 上加 <code>embedOrigin</code> 把訊息鎖定到指定 origin，並在你自己的訊息處理裡校驗
+          <code>event.origin</code>。
+        </p>
+      </div>
+
+      <footer>
+        <a href="/zh-TW/">開啟編輯器</a>
+        <a href="/zh-TW/open/docx">開啟 DOCX</a>
+        <a href="/zh-TW/open/xlsx">開啟 XLSX</a>
+        <a href="/zh-TW/open/pptx">開啟 PPTX</a>
+        <a href="/zh-TW/convert/xlsx-to-csv">XLSX 轉 CSV</a>
+        <a href="/zh-TW/convert/csv-to-xlsx">CSV 轉 XLSX</a>
+        <a href="/zh-TW/no-signup-document-editor">免註冊</a>
+        <a href="/zh-TW/private-document-editor">隱私編輯器</a>
+        <a href="/zh-TW/offline-document-editor">離線</a>
+        <a href="/zh-TW/edit-documents-without-account">免賬號</a>
+        <a href="https://github.com/anomixer/document" rel="noopener">GitHub</a>
+        <r-theme-switch class="theme-switch" label="主題"></r-theme-switch>
+      </footer>
+    </main>
+  </body>
+</html>

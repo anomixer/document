@@ -3,6 +3,7 @@ import { View } from 'ranui/builder';
 import { initEmbedApi } from './lib/embed-api';
 import { initEvents, setEventUICallbacks } from './lib/events';
 import { onCreateNew, onOpenDocument, openDocumentFromUrl, openLocalFile, setUICallbacks } from './lib/document';
+import { setLanguage, LanguageCode } from '@ranuts/shared/i18n';
 import { parseReadonly } from '@ranuts/shared/document-utils';
 import { getDocmentObj } from '@ranuts/shared/store';
 import { initAnalytics } from './lib/analytics';
@@ -92,8 +93,20 @@ if (langSelect) {
     // Guard: r-select can emit `change` while initializing its value on load.
     // Navigating on a same-as-current-locale event reloads the page and wipes
     // deep-link params (?new=docx, ?locale=…), so only act on a real switch.
-    const onZhPage = location.pathname.startsWith('/zh-CN');
-    if (value === 'zh-CN' && !onZhPage) location.href = '/zh-CN/';
+    const onZhPage = location.pathname.startsWith('/zh-CN') || location.pathname.startsWith('/zh-TW');
+    const onZhCnPage = location.pathname.startsWith('/zh-CN');
+    const onZhTwPage = location.pathname.startsWith('/zh-TW');
+    // Remember the explicit choice so the homepage auto-detect (index.html) stops
+    // redirecting this visitor on their next visit.
+    if (['en', 'zh-CN', 'zh-TW'].includes(value ?? '')) {
+      localStorage.setItem('ran-lang', value!);
+      // Keep the editor/app UI language in sync so opening a doc in the SPA boots
+      // in the chosen language instead of the browser's zh locale.
+      const internal = value === 'zh-CN' ? LanguageCode.ZH : value === 'zh-TW' ? LanguageCode.ZH_TW : LanguageCode.EN;
+      setLanguage(internal);
+    }
+    if (value === 'zh-CN' && !onZhCnPage) location.href = '/zh-CN/';
+    else if (value === 'zh-TW' && !onZhTwPage) location.href = '/zh-TW/';
     else if (value === 'en' && onZhPage) location.href = '/';
   });
 }

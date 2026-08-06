@@ -7,3 +7,7 @@ public/ran-tokens.css
 # Vendored ranui per-component bundles (official dist/iife files, copied from
 # ranui by bin/build.sh) — generated and minified, not hand-written.
 public/ranui-iife/
+
+# Generated Traditional-Chinese editor bundles (built by bin/build-zh-tw.js from
+# the stock app.js via opencc-js). Huge generated files, not hand-written.
+public/web-apps/apps/*/main/app.zh-tw.js

@@ -49,6 +49,17 @@ else
     echo "Warning: $RAN_FONTS_SRC not found, using existing public/ran-fonts/."
 fi
 
+# Regenerate the Traditional Chinese (zh-TW) editor bundles.
+#
+# OnlyOffice embeds each editor's Simplified Chinese strings inside its minified
+# `app.js` (the `define('<editor>/main/locale/zh.json', {...})` module); the SDK
+# never loads the on-disk locale/*.json files. To give zh-TW visitors a Traditional
+# editor we ship a sibling `app.zh-tw.js` (only that embedded module converted,
+# via opencc-js s2twp), plus an `app-loader.js` and a `data-main` patch so the
+# editor frame picks the right bundle from its `lang` param. Re-running this also
+# self-heals after an OnlyOffice upgrade (stock app.js / index.html restored).
+node bin/build-zh-tw.js
+
 # Run Vite build
 pnpm vite build
 

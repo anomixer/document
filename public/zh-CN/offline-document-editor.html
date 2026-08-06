@@ -14,10 +14,11 @@
       name="description"
       content="无需联网的离线文档编辑器，在 Chromebook、笔记本或安卓设备上都能用。在浏览器本地编辑 DOCX、XLSX、PPTX 和 CSV 文件。免费、开源、可安装，文件始终留在本地。"
     />
-    <link rel="canonical" href="https://edit.chaxus.com/zh-CN/offline-document-editor" />
-    <link rel="alternate" hreflang="en" href="https://edit.chaxus.com/offline-document-editor" />
-    <link rel="alternate" hreflang="zh-CN" href="https://edit.chaxus.com/zh-CN/offline-document-editor" />
-    <link rel="alternate" hreflang="x-default" href="https://edit.chaxus.com/offline-document-editor" />
+    <link rel="canonical" href="https://document26.pages.dev/zh-CN/offline-document-editor" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/offline-document-editor" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/offline-document-editor" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/offline-document-editor" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/offline-document-editor" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Online Document Editor" />
@@ -26,15 +27,15 @@
       property="og:description"
       content="适用于 Chromebook、笔记本和安卓的离线文档编辑器。在本地编辑 DOCX、XLSX、PPTX。开源，文件始终留在本地。"
     />
-    <meta property="og:url" content="https://edit.chaxus.com/zh-CN/offline-document-editor" />
-    <meta property="og:image" content="https://edit.chaxus.com/img/pwa-512.png" />
+    <meta property="og:url" content="https://document26.pages.dev/zh-CN/offline-document-editor" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="离线文档编辑器——无需联网即可编辑 DOCX、XLSX、PPTX" />
     <meta
       name="twitter:description"
       content="适用于 Chromebook、笔记本和安卓的离线文档编辑器。在本地编辑 DOCX、XLSX、PPTX。开源，文件始终留在本地。"
     />
-    <meta name="twitter:image" content="https://edit.chaxus.com/img/pwa-512.png" />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
 
     <script type="application/ld+json">
       {
@@ -43,7 +44,7 @@
           {
             "@type": "WebApplication",
             "name": "Online Document Editor",
-            "url": "https://edit.chaxus.com/zh-CN/offline-document-editor",
+            "url": "https://document26.pages.dev/zh-CN/offline-document-editor",
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Any (web browser)",
             "isAccessibleForFree": true,
@@ -53,7 +54,7 @@
           {
             "@type": "SoftwareSourceCode",
             "name": "Online Document Editor",
-            "codeRepository": "https://github.com/ranuts/document",
+            "codeRepository": "https://github.com/anomixer/document",
             "programmingLanguage": "TypeScript",
             "license": "https://www.gnu.org/licenses/agpl-3.0.html"
           },
@@ -147,12 +148,12 @@
           {
             "@type": "BreadcrumbList",
             "itemListElement": [
-              { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://edit.chaxus.com/" },
+              { "@type": "ListItem", "position": 1, "name": "首页", "item": "https://document26.pages.dev/" },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "离线文档编辑器",
-                "item": "https://edit.chaxus.com/zh-CN/offline-document-editor"
+                "item": "https://document26.pages.dev/zh-CN/offline-document-editor"
               }
             ]
           }
@@ -192,7 +193,7 @@
     </svg>
 
     <header class="bar">
-      <a class="brand" href="/zh-CN/"><span class="logo">文</span>文档编辑器</a>
+      <a class="brand" href="/"><span class="logo">文</span>文档编辑器</a>
       <nav>
         <span class="lang-wrap">
           <svg class="langmark" aria-hidden="true" viewBox="0 0 16 16">
@@ -204,12 +205,13 @@
               stroke-width="1.2"
             />
           </svg>
-          <r-select class="lang-select" type="text" value="zh-CN" aria-label="语言">
-            <r-option value="en" data-href="/offline-document-editor">EN</r-option>
-            <r-option value="zh-CN" data-href="/zh-CN/offline-document-editor">中文</r-option>
-          </r-select>
+          <r-select class="lang-select" type="text" value="zh-CN" aria-label="语言"
+            ><r-option value="zh-CN" data-href="/zh-CN/offline-document-editor">简体中文</r-option
+            ><r-option value="en" data-href="/offline-document-editor">EN</r-option
+            ><r-option value="zh-TW" data-href="/zh-TW/offline-document-editor">繁體中文</r-option></r-select
+          >
         </span>
-        <a href="https://github.com/ranuts/document" rel="noopener" target="_blank">
+        <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">
           <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
         </a>
       </nav>
@@ -257,7 +259,7 @@
       <r-card class="oss"
         ><div class="card-body">
           <strong>开源且可自托管。</strong> 基于 AGPL-3.0 协议——你可以核实文件确实没有被上传，或者运行你自己的副本：
-          <a href="https://github.com/ranuts/document" rel="noopener">github.com/ranuts/document</a>。
+          <a href="https://github.com/anomixer/document" rel="noopener">github.com/anomixer/document</a>。
         </div></r-card
       >
 
@@ -290,7 +292,7 @@
         <a href="/zh-CN/private-document-editor">隐私编辑器</a>
         <a href="/zh-CN/edit-documents-without-account">免账号</a>
         <a href="/zh-CN/embed-document-editor">Embed API</a>
-        <a href="https://github.com/ranuts/document" rel="noopener">GitHub</a>
+        <a href="https://github.com/anomixer/document" rel="noopener">GitHub</a>
         <r-theme-switch class="theme-switch" label="主题"></r-theme-switch>
       </footer>
     </main>

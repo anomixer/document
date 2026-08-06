@@ -4,7 +4,7 @@
 
 基于 OnlyOffice 的本地 Web 文档编辑器，所有处理在浏览器端完成，无需服务器，保护用户隐私。支持 docx、xlsx、pptx、csv 等格式。
 
-- **线上地址**：https://edit.chaxus.com/ （旧址 https://ranuts.github.io/document/ 已跳转至此）
+- **线上地址**：https://document26.pages.dev/ （旧址 https://ranuts.github.io/document/ 已跳转至此）
 - **GitHub**：https://github.com/ranuts/document
 - **技术栈**：TypeScript + Vite + Tailwind CSS + OnlyOffice Web Apps
 
@@ -185,7 +185,7 @@ E2E 在 CI 中依赖 `lint` job 成功后才运行（`needs: lint`）。本地�
 
 ## ran 生态优先（ranui / ranuts / builder）
 
-本项目属于 chaxus 的 `ran` 生态（edit.chaxus.com / @ranui/preview / ran.chaxus.com）。写 UI 或工具逻辑时，**优先复用生态自有能力，不要手写重复实现**：
+本项目属于 chaxus 的 `ran` 生态（document26.pages.dev / @ranui/preview / ran.chaxus.com）。写 UI 或工具逻辑时，**优先复用生态自有能力，不要手写重复实现**：
 
 - **组件优先用 ranui**：`r-button` / `r-card` / `r-icon`（含 `name="github"`）/ `r-link` / `r-input` / `r-modal` / `r-select` / `r-tab` 等，`import 'ranui/<name>'` 注册；已装版本的导出以 `node_modules/ranui/dist` 为准。跨 Shadow DOM 定制样式用 `::part`（见 `styles/base.css` 里的 `r-button::part(...)`）。
 - **DOM 构造优先用 ranui builder**：`import { Div, View, ButtonBuilder } from 'ranui/builder'`（`lib/ui.ts` 已在用），不要用成堆 `document.createElement` 拼装。

@@ -1,4 +1,4 @@
-# edit.chaxus.com SEO / GEO 流量经验(哥飞「出海做站」方法论 × 本项目现状)
+# document26.pages.dev SEO / GEO 流量经验(哥飞「出海做站」方法论 × 本项目现状)
 
 > 2026-07-09
 
@@ -11,11 +11,11 @@ overseas-indie / content-ip / product-design)的方法论对齐到本项目,沉�
 
 同一生态里的三个属性,受众/意图完全不同,不要混为一谈:
 
-| 属性                                        | 是什么                         | 搜索意图                        | 角色             |
-| ------------------------------------------- | ------------------------------ | ------------------------------- | ---------------- |
-| **edit.chaxus.com**(本仓库 ranuts/document) | 纯前端 Office 编辑器           | 消费者:"在线编辑 docx / 免上传" | 流量磁铁(量在这) |
-| **@ranui/preview**(ranuts/fileview)         | 可嵌入的文件预览 web component | 开发者 / npm                    | 背链引擎         |
-| **ran.chaxus.com**(chaxus/ran)              | ranui 组件库 + ranuts 工具     | 开发者                          | 品牌中枢         |
+| 属性                                             | 是什么                         | 搜索意图                        | 角色             |
+| ------------------------------------------------ | ------------------------------ | ------------------------------- | ---------------- |
+| **document26.pages.dev**(本仓库 ranuts/document) | 纯前端 Office 编辑器           | 消费者:"在线编辑 docx / 免上传" | 流量磁铁(量在这) |
+| **@ranui/preview**(ranuts/fileview)              | 可嵌入的文件预览 web component | 开发者 / npm                    | 背链引擎         |
+| **ran.chaxus.com**(chaxus/ran)                   | ranui 组件库 + ranuts 工具     | 开发者                          | 品牌中枢         |
 
 ## 核查到的现状(2026-07-09)
 
@@ -40,7 +40,7 @@ overseas-indie / content-ip / product-design)的方法论对齐到本项目,沉�
 ### 2. 【战略校准】子域名 = 权重从零 → 别把三站互链当主力流量手段
 
 - 出处 `seo-optimization`:子域名被谷歌当独立站,权重从零。
-- `edit.chaxus.com` 与 `ran.chaxus.com` 各自攒权重、互不继承。**三站互链只是品牌/实体信号
+- `document26.pages.dev` 与 `ran.chaxus.com` 各自攒权重、互不继承。**三站互链只是品牌/实体信号
   (对 GEO 有用),不是权重来源。** 真权重靠外链。
 - 长期若真要合并权重,需收敛到 `chaxus.com/edit`(大改,先记着)。
 

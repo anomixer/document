@@ -4,7 +4,7 @@
 
 ## 背景
 
-document 项目计划从 `ranuts.github.io/document` 迁到 `edit.chaxus.com`(Cloudflare Pages)。
+document 项目计划从 `ranuts.github.io/document` 迁到 `document26.pages.dev`(Cloudflare Pages)。
 唯一的托管硬阻塞:**CF Pages 单文件上限 25 MiB**,而 `public/wasm/x2t/x2t.wasm` = **55 M**,部署时会被直接拒收(dist 文件数 336,远低于 2 万上限,无其它阻塞)。
 
 目标:让浏览器仍拿到 55M 解压后的 wasm,但**部署产物里不再有超限的裸文件**。

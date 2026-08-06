@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/img/64.png" rel="shortcut icon" />
+    <link rel="icon" type="image/png" href="/img/64.png" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+
+    <title>無需賬號編輯文件——免註冊，開啟即用</title>
+    <meta
+      name="description"
+      content="無需賬號、無需註冊、無需登入，即可編輯 Word（DOCX）、Excel（XLSX）、PowerPoint（PPTX）和 CSV 檔案。開啟編輯器即可在瀏覽器中立即開始。免費、開源（AGPL-3.0）、不上傳檔案、支援離線。"
+    />
+    <link rel="canonical" href="https://document26.pages.dev/zh-TW/edit-documents-without-account" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/edit-documents-without-account" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/edit-documents-without-account" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/edit-documents-without-account" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/edit-documents-without-account" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Online Document Editor" />
+    <meta property="og:title" content="無需賬號編輯文件——免註冊，開啟即用" />
+    <meta
+      property="og:description"
+      content="無需賬號、免註冊即可編輯 DOCX、XLSX、PPTX 和 CSV——開啟編輯器立即開始。免費、開源。"
+    />
+    <meta property="og:url" content="https://document26.pages.dev/zh-TW/edit-documents-without-account" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="無需賬號編輯文件——免註冊，開啟即用" />
+    <meta
+      name="twitter:description"
+      content="無需賬號、免註冊即可編輯 DOCX、XLSX、PPTX 和 CSV——開啟編輯器立即開始。免費、開源。"
+    />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "Online Document Editor",
+            "url": "https://document26.pages.dev/zh-TW/edit-documents-without-account",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Any (web browser)",
+            "isAccessibleForFree": true,
+            "description": "在瀏覽器中編輯 DOCX、XLSX、PPTX 和 CSV 檔案，無需賬號、無需註冊、無需登入。開啟即可立即開始編輯——不上傳任何內容。",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "Online Document Editor",
+            "codeRepository": "https://github.com/anomixer/document",
+            "programmingLanguage": "TypeScript",
+            "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "不建立賬號也能編輯文件嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。沒有賬號、沒有註冊、沒有登入。你開啟編輯器就能立即開始編輯 DOCX、XLSX、PPTX 或 CSV 檔案。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "需要提供郵箱地址嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "不需要。因為沒有任何註冊步驟，所以永遠不會向你索要郵箱地址、電話號碼或任何個人資訊。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "沒有賬號，我的檔案儲存在哪裡？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "你的檔案留在自己的裝置上。編輯通過 WebAssembly 在瀏覽器本地完成，你再把結果下載回自己的電腦——不上傳任何內容。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "沒有賬號也是免費的嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "是的。它在 AGPL-3.0 協議下免費且開源，沒有付費牆，也不需要賬號來解鎖功能。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "不登入也能離線使用嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。它可作為 PWA 安裝，載入後可完全離線使用，因此你和你的文件之間永遠沒有登入牆。"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "首頁", "item": "https://document26.pages.dev/" },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "無需賬號編輯文件",
+                "item": "https://document26.pages.dev/zh-TW/edit-documents-without-account"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <!-- No-flash theme restore: apply a forced light/dark before first paint so a
+         dark-mode visitor never sees a white flash. 'system' leaves the attributes
+         off and the token layer's media query decides. Kept inline and tiny. -->
+    <script>
+      try {
+        var t = localStorage.getItem('ran-theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.setAttribute('data-ran-theme', t);
+          document.documentElement.setAttribute('theme', t);
+        }
+      } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/ran-fonts/fonts.css" />
+    <link rel="stylesheet" href="/ran-tokens.css" />
+    <link rel="stylesheet" href="/landing.css" />
+    <script src="/ranui-iife/button.iife.js" defer></script>
+    <script src="/ranui-iife/card.iife.js" defer></script>
+    <script src="/ranui-iife/select.iife.js" defer></script>
+    <script src="/ranui-iife/theme-switch.iife.js" defer></script>
+    <script src="/lang-switch.js" defer></script>
+  </head>
+
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="gh-mark" viewBox="0 0 16 16">
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+        />
+      </symbol>
+    </svg>
+
+    <header class="bar">
+      <a class="brand" href="/"><span class="logo">文</span>文件編輯器</a>
+      <nav>
+        <span class="lang-wrap">
+          <svg class="langmark" aria-hidden="true" viewBox="0 0 16 16">
+            <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M1.75 8h12.5M8 1.75c1.7 1.8 2.6 3.9 2.6 6.25S9.7 12.45 8 14.25M8 1.75c-1.7 1.8-2.6 3.9-2.6 6.25s.9 4.45 2.6 6.25"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+          <r-select class="lang-select" type="text" value="zh-TW" aria-label="语言"
+            ><r-option value="zh-TW" data-href="/zh-TW/edit-documents-without-account">繁體中文</r-option
+            ><r-option value="en" data-href="/edit-documents-without-account">EN</r-option
+            ><r-option value="zh-CN" data-href="/zh-CN/edit-documents-without-account">简体中文</r-option></r-select
+          >
+        </span>
+        <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">
+          <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
+        </a>
+      </nav>
+    </header>
+
+    <main class="wrap">
+      <p class="eyebrow">無需賬號 · 開啟即用</p>
+      <h1>想不用賬號就編輯文件？</h1>
+      <p class="lead">
+        無需註冊任何東西即可編輯 Word（DOCX）、Excel（XLSX）、PowerPoint（PPTX）和 CSV
+        檔案。沒有賬號、沒有登入、無需交出郵箱——開啟編輯器就能開始輸入。
+      </p>
+
+      <a class="cta" href="/"><r-button type="primary">開啟編輯器 →</r-button></a>
+
+      <p>
+        你和文件之間沒有任何註冊牆。一切都通過 WebAssembly
+        在瀏覽器本地執行，之所以不需要建立賬號，是因為一開始就沒有伺服器在儲存你的檔案。你開啟一個檔案、編輯它、再下載回來——整個流程就這麼簡單。
+      </p>
+
+      <p>
+        它是一個完整的編輯器，而不是簡化的預覽：由 OnlyOffice
+        引擎驅動，字型、表格、公式和排版都保持原樣。而且由於你的檔案永遠不會離開你的裝置，省去賬號也意味著省去了用資料換取訪問許可權的常見交易。
+      </p>
+
+      <h2>你可以做什麼</h2>
+      <ul>
+        <li><strong>無需賬號即可開始</strong>——無需註冊、無需登入、無需郵箱或電話號碼。</li>
+        <li><strong>編輯常見格式</strong>——DOCX、XLSX、PPTX 和 CSV，完整保留排版。</li>
+        <li><strong>檔案留在本機</strong>——100% 客戶端處理，你的文件從不上傳。</li>
+        <li><strong>離線可用</strong>——可作為 PWA 安裝，無網路也能使用。</li>
+        <li><strong>始終免費</strong>——基於 AGPL-3.0 開源，沒有需要解鎖的付費牆。</li>
+      </ul>
+
+      <h2>如何使用</h2>
+      <ol>
+        <li>開啟編輯器——不會出現任何註冊頁面。</li>
+        <li>從你的裝置中選擇一個 DOCX、XLSX、PPTX 或 CSV 檔案。</li>
+        <li>直接在瀏覽器中編輯；檔案在本地處理，而不是在伺服器上。</li>
+        <li>把完成的檔案下載回你的裝置。</li>
+      </ol>
+
+      <r-card class="oss"
+        ><div class="card-body">
+          <strong>開源且可自託管。</strong> 基於 AGPL-3.0
+          協議——你可以親自確認這裡沒有賬號、也不上傳任何內容，或者執行你自己的副本：
+          <a href="https://github.com/anomixer/document" rel="noopener">github.com/anomixer/document</a>。
+        </div></r-card
+      >
+
+      <h2 class="faq">常見問題</h2>
+      <div class="faq">
+        <h3>不建立賬號也能編輯文件嗎？</h3>
+        <p>可以。沒有賬號、沒有註冊、沒有登入。你開啟編輯器就能立即開始編輯 DOCX、XLSX、PPTX 或 CSV 檔案。</p>
+        <h3>需要提供郵箱地址嗎？</h3>
+        <p>不需要。因為沒有任何註冊步驟，所以永遠不會向你索要郵箱地址、電話號碼或任何個人資訊。</p>
+        <h3>沒有賬號，我的檔案儲存在哪裡？</h3>
+        <p>
+          你的檔案留在自己的裝置上。編輯通過 WebAssembly 在瀏覽器本地完成，你再把結果下載回自己的電腦——不上傳任何內容。
+        </p>
+        <h3>沒有賬號也是免費的嗎？</h3>
+        <p>是的。它在 AGPL-3.0 協議下免費且開源，沒有付費牆，也不需要賬號來解鎖功能。</p>
+        <h3>不登入也能離線使用嗎？</h3>
+        <p>可以。它可作為 PWA 安裝，載入後可完全離線使用，因此你和你的文件之間永遠沒有登入牆。</p>
+      </div>
+
+      <footer>
+        <a href="/zh-TW/">開啟編輯器</a>
+        <a href="/zh-TW/open/docx">開啟 DOCX</a>
+        <a href="/zh-TW/open/xlsx">開啟 XLSX</a>
+        <a href="/zh-TW/open/pptx">開啟 PPTX</a>
+        <a href="/zh-TW/convert/xlsx-to-csv">XLSX 轉 CSV</a>
+        <a href="/zh-TW/convert/csv-to-xlsx">CSV 轉 XLSX</a>
+        <a href="/zh-TW/no-signup-document-editor">免註冊</a>
+        <a href="/zh-TW/private-document-editor">隱私編輯器</a>
+        <a href="/zh-TW/offline-document-editor">離線</a>
+        <a href="/zh-TW/embed-document-editor">Embed API</a>
+        <a href="https://github.com/anomixer/document" rel="noopener">GitHub</a>
+        <r-theme-switch class="theme-switch" label="主題"></r-theme-switch>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -102,7 +102,7 @@ header.bar nav a:hover {
 }
 r-select.lang-select {
   display: inline-block;
-  min-width: 84px;
+  min-width: 108px;
   font-size: 14px;
 }
 /* hide the raw option list pre-upgrade; the reserved width avoids layout shift */

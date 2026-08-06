@@ -16,11 +16,12 @@
       name="description"
       content="Open and view Word (DOCX), Excel (XLSX), PowerPoint (PPTX) and CSV files directly in your browser — no Office installed, no upload, no sign-up. Edit and save them too. Free, privacy-first, works offline. Powered by OnlyOffice."
     />
-    <link rel="canonical" href="https://edit.chaxus.com/" />
+    <link rel="canonical" href="https://document26.pages.dev/" />
     <meta name="robots" content="index, follow" />
-    <link rel="alternate" hreflang="en" href="https://edit.chaxus.com/" />
-    <link rel="alternate" hreflang="zh-CN" href="https://edit.chaxus.com/zh-CN/" />
-    <link rel="alternate" hreflang="x-default" href="https://edit.chaxus.com/" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/" />
     <!-- No-flash theme restore: apply a forced light/dark before first paint so a
          dark-mode visitor never sees a white flash. 'system' leaves the attributes
          off and the token layer's media query decides. Kept inline and tiny. -->
@@ -32,6 +33,30 @@
           document.documentElement.setAttribute('theme', t);
         }
       } catch (e) {}
+    </script>
+    <!-- Auto language: only on the bare homepage (deep links with query params like
+         ?new=docx must keep their locale). An explicit choice (ran-lang, written by the
+         language switcher) always wins — so a zh-TW/zh-CN visitor who picked EN stays
+         on EN. Without a stored choice, fall back to the browser's zh locale (a zh-CN
+         browser lands on /zh-CN/, a zh-TW browser on /zh-TW/). -->
+    <script>
+      (function () {
+        try {
+          if (location.search || location.pathname !== '/') return;
+          var lang = (navigator.language || '').toLowerCase();
+          var detected = null;
+          if (/^zh[-_]?hant/.test(lang) || /^zh[-_]?(tw|hk|mo)/.test(lang)) detected = 'zh-TW';
+          else if (/^zh/.test(lang)) detected = 'zh-CN';
+          var stored = localStorage.getItem('ran-lang');
+          if (stored !== 'en' && stored !== 'zh-CN' && stored !== 'zh-TW') stored = null;
+          var locale = stored || detected;
+          if (!locale) return;
+          var target = locale === 'zh-TW' ? '/zh-TW/' : locale === 'zh-CN' ? '/zh-CN/' : '/';
+          if (target === '/') return;
+          localStorage.setItem('ran-lang', locale);
+          location.replace(target);
+        } catch (e) {}
+      })();
     </script>
     <!-- ranui design-token layer (vendored from ranui/dist/ranui.css, re-synced by bin/build.sh).
          Loaded before home.css so the landing hero's --ran-* tokens resolve on first paint. -->
@@ -47,8 +72,8 @@
       property="og:description"
       content="Open, view and edit DOCX, XLSX, PPTX and CSV in your browser — no Office, no upload, no sign-up. Free and offline-capable."
     />
-    <meta property="og:url" content="https://edit.chaxus.com/" />
-    <meta property="og:image" content="https://edit.chaxus.com/img/pwa-512.png" />
+    <meta property="og:url" content="https://document26.pages.dev/" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -57,7 +82,7 @@
       name="twitter:description"
       content="Open, view and edit DOCX, XLSX, PPTX and CSV in your browser — no Office, no upload, no sign-up. Free and offline-capable."
     />
-    <meta name="twitter:image" content="https://edit.chaxus.com/img/pwa-512.png" />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
 
     <!-- Structured data: helps search engines and AI assistants understand the app -->
     <script type="application/ld+json">
@@ -65,7 +90,7 @@
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "Online Document Editor",
-        "url": "https://edit.chaxus.com/",
+        "url": "https://document26.pages.dev/",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Any (web browser)",
         "browserRequirements": "Requires a modern browser with WebAssembly support",
@@ -82,7 +107,7 @@
           "Free and open source (AGPL-3.0)"
         ],
         "sameAs": [
-          "https://github.com/ranuts/document",
+          "https://github.com/anomixer/document",
           "https://www.npmjs.com/package/@ranui/preview",
           "https://ran.chaxus.com"
         ],
@@ -142,7 +167,7 @@
         "@context": "https://schema.org",
         "@type": "SoftwareSourceCode",
         "name": "Online Document Editor",
-        "codeRepository": "https://github.com/ranuts/document",
+        "codeRepository": "https://github.com/anomixer/document",
         "programmingLanguage": "TypeScript",
         "license": "https://www.gnu.org/licenses/agpl-3.0.html"
       }
@@ -171,7 +196,7 @@
             <nav>
               <a class="navlink" href="/offline-document-editor">Offline</a>
               <a class="navlink" href="/no-signup-document-editor">No sign-up</a>
-              <a class="navlink gh" href="https://github.com/ranuts/document" rel="noopener" target="_blank">
+              <a class="navlink gh" href="https://github.com/anomixer/document" rel="noopener" target="_blank">
                 <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
               </a>
               <span class="lang-wrap">
@@ -186,7 +211,8 @@
                 </svg>
                 <r-select class="lang-select" type="text" value="en" aria-label="Language">
                   <r-option value="en">EN</r-option>
-                  <r-option value="zh-CN">中文</r-option>
+                  <r-option value="zh-CN">简体中文</r-option>
+                  <r-option value="zh-TW">繁體中文</r-option>
                 </r-select>
               </span>
             </nav>
@@ -401,7 +427,7 @@
               Part of the ran ecosystem · all open source
             </span>
             <nav>
-              <span class="here"><b>edit.chaxus.com</b> <small>Office editor</small></span>
+              <span class="here"><b>document26.pages.dev</b> <small>Office editor</small></span>
               <a href="https://ran.chaxus.com" rel="noopener" target="_blank">
                 <b>ran.chaxus.com</b> <small>UI components</small>
               </a>
@@ -416,7 +442,7 @@
             <a href="/no-signup-document-editor">No sign-up</a>
             <a href="/open/docx">Open DOCX</a>
             <a href="/convert/xlsx-to-csv">XLSX → CSV</a>
-            <a href="https://github.com/ranuts/document" rel="noopener" target="_blank">GitHub</a>
+            <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">GitHub</a>
           </nav>
           <r-theme-switch class="theme-switch" label="Theme"></r-theme-switch>
           <span class="lic">AGPL-3.0</span>

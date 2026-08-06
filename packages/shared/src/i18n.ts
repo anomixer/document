@@ -6,12 +6,14 @@ import { getCookie, getQuery, localStorageGetItem, localStorageSetItem } from 'r
 
 /**
  * Language codes enum
- * Internal language codes (simplified): 'zh' | 'en'
- * OnlyOffice language codes (BCP 47 standard): 'zh-CN' | 'en'
+ * Internal language codes: 'zh' (Simplified) | 'zh-tw' (Traditional) | 'en'
+ * OnlyOffice language codes (BCP 47 standard): 'zh-CN' | 'zh-TW' | 'en'
  */
 export enum LanguageCode {
   /** Simplified Chinese (internal) */
   ZH = 'zh',
+  /** Traditional Chinese (internal) */
+  ZH_TW = 'zh-tw',
   /** English (internal) */
   EN = 'en',
 }
@@ -22,11 +24,13 @@ export enum LanguageCode {
 export enum OnlyOfficeLanguageCode {
   /** Simplified Chinese (Mainland China) - BCP 47 standard */
   ZH_CN = 'zh-CN',
+  /** Traditional Chinese (Taiwan) - BCP 47 standard */
+  ZH_TW = 'zh-TW',
   /** English */
   EN = 'en',
 }
 
-export type Language = LanguageCode.ZH | LanguageCode.EN;
+export type Language = LanguageCode.ZH | LanguageCode.ZH_TW | LanguageCode.EN;
 
 export interface I18nMessages {
   // UI text
@@ -138,6 +142,56 @@ const messages: Record<Language, I18nMessages> = {
     agentToolCallPrefix: '调用工具：',
     agentToolErrorPrefix: '工具出错：',
   },
+  [LanguageCode.ZH_TW]: {
+    webOffice: 'Web Office',
+    uploadDocument: '檢視/編輯文件',
+    newWord: '新增 Word',
+    newExcel: '新增 Excel',
+    newPowerPoint: '新增 PowerPoint',
+    menu: '選單',
+    menuGuide: '選單在右下角，懸停即可檢視（點選關閉後不再提示）',
+    fileSavedSuccess: '檔案儲存成功：',
+    documentLoaded: '文件載入完成：',
+    failedToLoadEditor: '無法載入編輯器元件。請確保已正確安裝 OnlyOffice API。',
+    unsupportedFileType: '不支援的檔案型別：',
+    invalidFileObject: '無效的檔案物件',
+    documentOperationFailed: '文件操作失敗：',
+    agentTitle: 'AI 助手',
+    agentOpenTip: '開啟 AI 助手',
+    agentSettings: '設定',
+    agentRoleUser: '你',
+    agentRoleTool: '工具',
+    agentRoleError: '錯誤',
+    agentProviderClaude: 'Claude（雲端，需 API Key）',
+    agentProviderOpenAI: 'OpenAI（雲端，需 API Key）',
+    agentProviderGemini: 'Gemini（雲端，需 API Key）',
+    agentProviderLocal: '本地離線（WebLLM，需 WebGPU）',
+    agentProviderOllama: 'Ollama（本機服務，需自行執行）',
+    agentOllamaModelPlaceholder: '模型名，如 llama3.2',
+    agentOllamaHint: '連接本機 Ollama（http://localhost:11434），無需 API Key，請確保已執行對應模型。',
+    agentLoadModel: '載入模型',
+    agentModelLoaded: '模型已載入，可以開始對話。',
+    agentCheckingCache: '檢查模型快取…',
+    agentModelCached: '該模型已快取，點選「載入模型」秒開（重新整理頁面也不會重新下載）。',
+    agentModelFirstDownload: '首次使用需下載（{size}），之後瀏覽器快取，重新整理不再下載。',
+    agentNoWebGPU: '當前瀏覽器不支援 WebGPU，無法使用本機模式。',
+    agentLocalChatOnly: '本機模型僅用於問答/改寫，不會直接編輯文件。如需 AI 直接編輯文件，',
+    agentSwitchCloud: '切換到雲端 →',
+    agentReviewMode: '修訂模式',
+    agentQuote: '引用選區',
+    agentQuoteTip: '把當前在文件/表格/投影片中選中的文字引用到輸入框',
+    agentClear: '清空對話',
+    agentInputPlaceholder: '讓 AI 幫你編輯文件…（Enter 傳送，Shift+Enter 換行）',
+    agentSend: '傳送',
+    agentStop: '停止',
+    agentNeedKey: '請先填寫 API Key。',
+    agentNoSelection: '沒有檢測到選中的內容，請先在文件中選擇文字。',
+    agentQuotePrefix: '請參考我選中的內容：',
+    agentStopped: '已停止。',
+    agentMaxSteps: '已達到最大執行步數，已停止。',
+    agentToolCallPrefix: '呼叫工具：',
+    agentToolErrorPrefix: '工具出錯：',
+  },
   [LanguageCode.EN]: {
     webOffice: 'Web Office',
     uploadDocument: 'View/Edit Document',
@@ -211,13 +265,21 @@ class I18n {
 
   /**
    * Normalize language code to LanguageCode enum
-   * Supports: 'zh', 'zh-CN', 'zh_CN', 'en', 'en-US', etc.
+   * Supports: 'zh', 'zh-CN', 'zh_CN', 'zh-TW', 'zh_HK', 'zh-Hant', 'en', 'en-US', etc.
    */
   private normalizeLanguage(lang: string | null): Language | null {
     if (!lang) return null;
-    const normalized = lang.toLowerCase().split(/[-_]/)[0];
-    if (normalized === 'zh') return LanguageCode.ZH;
-    if (normalized === 'en') return LanguageCode.EN;
+    const low = lang.toLowerCase();
+    const parts = low.split(/[-_]/);
+    if (parts[0] === 'zh') {
+      // Traditional Chinese regions / scripts -> ZH_TW, otherwise Simplified ZH.
+      const region = parts[1] || '';
+      if (region === 'tw' || region === 'hk' || region === 'mo' || region === 'hant') {
+        return LanguageCode.ZH_TW;
+      }
+      return LanguageCode.ZH;
+    }
+    if (parts[0] === 'en') return LanguageCode.EN;
     return null;
   }
 
@@ -238,9 +300,21 @@ class I18n {
     // 3. If not found in cookies, try localStorage
     if (!detectedLang) {
       const savedLang = localStorageGetItem('document-lang') as Language;
-      if (savedLang && (savedLang === LanguageCode.ZH || savedLang === LanguageCode.EN)) {
+      if (
+        savedLang &&
+        (savedLang === LanguageCode.ZH || savedLang === LanguageCode.EN || savedLang === LanguageCode.ZH_TW)
+      ) {
         detectedLang = savedLang;
       }
+    }
+
+    // 3b. Fall back to the homepage's explicitly chosen language (`ran-lang`,
+    //     written by the homepage language switcher / auto-detect). Without this
+    //     the editor would boot from the browser's zh locale even after the user
+    //     explicitly picked English, so opening a doc would show a Chinese UI.
+    if (!detectedLang) {
+      const homepageLang = localStorageGetItem('ran-lang');
+      if (homepageLang) detectedLang = this.normalizeLanguage(homepageLang);
     }
 
     // 4. If not found in localStorage, try navigator.language
@@ -269,7 +343,7 @@ class I18n {
    * Set language
    */
   setLanguage(lang: Language): void {
-    if (lang === LanguageCode.ZH || lang === LanguageCode.EN) {
+    if (lang === LanguageCode.ZH || lang === LanguageCode.EN || lang === LanguageCode.ZH_TW) {
       this.currentLanguage = lang;
       localStorageSetItem('document-lang', lang);
       // Trigger language change event
@@ -297,11 +371,13 @@ class I18n {
    * OnlyOffice uses BCP 47 standard language codes
    * - English: 'en'
    * - Simplified Chinese (Mainland China): 'zh-CN'
+   * - Traditional Chinese (Taiwan): 'zh-TW'
    */
   getOnlyOfficeLang(): string {
     // Mapping from internal language code to OnlyOffice BCP 47 standard code
     const langMap: Record<Language, OnlyOfficeLanguageCode> = {
       [LanguageCode.ZH]: OnlyOfficeLanguageCode.ZH_CN,
+      [LanguageCode.ZH_TW]: OnlyOfficeLanguageCode.ZH_TW,
       [LanguageCode.EN]: OnlyOfficeLanguageCode.EN,
     };
     return langMap[this.currentLanguage] || OnlyOfficeLanguageCode.EN;

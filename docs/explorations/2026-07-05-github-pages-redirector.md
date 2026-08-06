@@ -1,17 +1,17 @@
-# GitHub Pages 跳转器 → edit.chaxus.com(带参数,准备件,暂不激活)
+# GitHub Pages 跳转器 → document26.pages.dev(带参数,准备件,暂不激活)
 
 > 2026-07-05
 
 ## 背景
 
-document 迁到 `edit.chaxus.com`(Cloudflare Pages)后,旧地址 `ranuts.github.io/document/*` 要保持可用并把 SEO 权重转过去。github.io 是 GitHub 域名,只能**客户端跳转**(JS `location.replace` + canonical,Google 视同 301)。
+document 迁到 `document26.pages.dev`(Cloudflare Pages)后,旧地址 `ranuts.github.io/document/*` 要保持可用并把 SEO 权重转过去。github.io 是 GitHub 域名,只能**客户端跳转**(JS `location.replace` + canonical,Google 视同 301)。
 
 ## 关键先决:document 已经 base 无关(ran 的根路径化对它是 no-op)
 
 核实后发现 document 与 ran 不同,**不需要**「base `/document/` → `/`」的代码工:
 
 - `vite.config.ts` base = `'./'`(相对,资源不带前缀)
-- `getBasePath()` 是**运行时**从 `window.location.pathname` 判断:`/document/` 开头→`/document/`,否则→`/`。在 `edit.chaxus.com` 根域上 pathname=`/` → 自动返回 `/`
+- `getBasePath()` 是**运行时**从 `window.location.pathname` 判断:`/document/` 开头→`/document/`,否则→`/`。在 `document26.pages.dev` 根域上 pathname=`/` → 自动返回 `/`
 - `manifest.json`:`start_url:"./"` + 图标相对路径,无绝对 `/document/`
 - SW 注册:`register('./sw.js')` 相对 → scope 随部署路径自适应
 
@@ -22,7 +22,7 @@ document 迁到 `edit.chaxus.com`(Cloudflare Pages)后,旧地址 `ranuts.github.
 `redirect/index.html` + `redirect/404.html`(内容一致,GitHub Pages 对未匹配路径回 404.html)。核心 JS:
 
 ```js
-var base = 'https://edit.chaxus.com';
+var base = 'https://document26.pages.dev';
 var path = location.pathname.replace(/^\/document/, '') || '/';
 var link = document.querySelector('link[rel=canonical]');
 if (link) link.href = base + path + location.search;
@@ -42,11 +42,11 @@ location.replace(base + path + location.search + location.hash);
 
 ## ⚠️ 激活时机(不可提前)
 
-**本 PR 是准备件,CF 新站 `edit.chaxus.com` 确认上线前不可合并/激活。** 否则会把用户导去尚不存在的站。顺序(照 ran 踩坑):
+**本 PR 是准备件,CF 新站 `document26.pages.dev` 确认上线前不可合并/激活。** 否则会把用户导去尚不存在的站。顺序(照 ran 踩坑):
 
-1. 先上 `edit.chaxus.com`(CF `*.pages.dev` 验证 OK)
+1. 先上 `document26.pages.dev`(CF `*.pages.dev` 验证 OK)
 2. 合并本 PR → workflow 改为发跳转器(**不能直接删 workflow**,否则 GH Pages 冻结旧站 → 重复内容打架)
-3. `workflow_dispatch` 手动触发首发,验证 `ranuts.github.io/document/` → 302/JS 跳 `edit.chaxus.com`
+3. `workflow_dispatch` 手动触发首发,验证 `ranuts.github.io/document/` → 302/JS 跳 `document26.pages.dev`
 4. GSC 地址变更 / sitemap / 外链
 
 **触发分支已统一到 `main`**(原 `release/v0.0.4`):CF 现从 main 部署 app,GH Pages 也随之 main-based → 合并本 PR 到 main 即激活。`release/v0.0.4` 仍是 v7 维护线,分支保留,只是 CI 不再依赖它。

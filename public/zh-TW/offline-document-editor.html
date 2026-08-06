@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/img/64.png" rel="shortcut icon" />
+    <link rel="icon" type="image/png" href="/img/64.png" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+
+    <title>離線文件編輯器——無需聯網即可編輯 DOCX、XLSX、PPTX</title>
+    <meta
+      name="description"
+      content="無需聯網的離線文件編輯器，在 Chromebook、筆記本或安卓裝置上都能用。在瀏覽器本地編輯 DOCX、XLSX、PPTX 和 CSV 檔案。免費、開源、可安裝，檔案始終留在本地。"
+    />
+    <link rel="canonical" href="https://document26.pages.dev/zh-TW/offline-document-editor" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/offline-document-editor" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/offline-document-editor" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/offline-document-editor" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/offline-document-editor" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Online Document Editor" />
+    <meta property="og:title" content="離線文件編輯器——無需聯網即可編輯 DOCX、XLSX、PPTX" />
+    <meta
+      property="og:description"
+      content="適用於 Chromebook、筆記本和安卓的離線文件編輯器。在本地編輯 DOCX、XLSX、PPTX。開源，檔案始終留在本地。"
+    />
+    <meta property="og:url" content="https://document26.pages.dev/zh-TW/offline-document-editor" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="離線文件編輯器——無需聯網即可編輯 DOCX、XLSX、PPTX" />
+    <meta
+      name="twitter:description"
+      content="適用於 Chromebook、筆記本和安卓的離線文件編輯器。在本地編輯 DOCX、XLSX、PPTX。開源，檔案始終留在本地。"
+    />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "Online Document Editor",
+            "url": "https://document26.pages.dev/zh-TW/offline-document-editor",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Any (web browser)",
+            "isAccessibleForFree": true,
+            "description": "一款可安裝的離線文件編輯器，在瀏覽器本地編輯 DOCX、XLSX、PPTX 和 CSV，無需聯網、檔案始終留在本地。",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "Online Document Editor",
+            "codeRepository": "https://github.com/anomixer/document",
+            "programmingLanguage": "TypeScript",
+            "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "它真的能離線使用嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。載入完成後它就是一個可安裝的 PWA，在沒有網路連線時依然正常工作，因為所有編輯都在你的瀏覽器本地執行。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "它能在 Chromebook 上用嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。它在任何現代瀏覽器中執行，因此在 Chromebook、筆記本、Windows、macOS、Linux 和安卓上都能用，無需從應用商店安裝 App。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "我的檔案會被上傳嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "不會。沒有伺服器。檔案在你的裝置本地開啟和儲存，永遠不會上傳。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "我能編輯哪些格式？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "DOCX、XLSX、PPTX 和 CSV，由 OnlyOffice 提供支援。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "我該如何把它安裝成 App？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "在 Chrome 或 Edge 中，使用位址列裡的安裝圖示或瀏覽器選單。在手機或平板上，選擇「新增到主螢幕」。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "第一次使用需要聯網嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "需要。先在聯網時載入一次頁面，讓 App 和 OnlyOffice 引擎快取到你的裝置上。之後它就能離線執行。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "離線時我的檔案儲存在哪裡？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "檔案從你自己的裝置開啟，也儲存到你自己的裝置上。不涉及任何伺服器，因此一切都不依賴網路連線。"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "HowTo",
+            "name": "如何離線使用文件編輯器",
+            "step": [
+              {
+                "@type": "HowToStep",
+                "name": "聯網時載入一次",
+                "text": "在聯網時開啟一次編輯器，讓 App 和 OnlyOffice 引擎快取到你的裝置上。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "安裝成 App",
+                "text": "使用瀏覽器的安裝選項，或在移動端選擇「新增到主螢幕」，把它安裝成 PWA。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "離線啟動",
+                "text": "在沒有網路的情況下，像啟動其他 App 一樣啟動已安裝的應用。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "開啟並編輯",
+                "text": "從你的裝置中開啟一個 DOCX、XLSX、PPTX 或 CSV 檔案，編輯它，再重新下載——全程離線。"
+              }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "首頁", "item": "https://document26.pages.dev/" },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "離線文件編輯器",
+                "item": "https://document26.pages.dev/zh-TW/offline-document-editor"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <!-- No-flash theme restore: apply a forced light/dark before first paint so a
+         dark-mode visitor never sees a white flash. 'system' leaves the attributes
+         off and the token layer's media query decides. Kept inline and tiny. -->
+    <script>
+      try {
+        var t = localStorage.getItem('ran-theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.setAttribute('data-ran-theme', t);
+          document.documentElement.setAttribute('theme', t);
+        }
+      } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/ran-fonts/fonts.css" />
+    <link rel="stylesheet" href="/ran-tokens.css" />
+    <link rel="stylesheet" href="/landing.css" />
+    <script src="/ranui-iife/button.iife.js" defer></script>
+    <script src="/ranui-iife/card.iife.js" defer></script>
+    <script src="/ranui-iife/select.iife.js" defer></script>
+    <script src="/ranui-iife/theme-switch.iife.js" defer></script>
+    <script src="/lang-switch.js" defer></script>
+  </head>
+
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="gh-mark" viewBox="0 0 16 16">
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+        />
+      </symbol>
+    </svg>
+
+    <header class="bar">
+      <a class="brand" href="/"><span class="logo">文</span>文件編輯器</a>
+      <nav>
+        <span class="lang-wrap">
+          <svg class="langmark" aria-hidden="true" viewBox="0 0 16 16">
+            <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M1.75 8h12.5M8 1.75c1.7 1.8 2.6 3.9 2.6 6.25S9.7 12.45 8 14.25M8 1.75c-1.7 1.8-2.6 3.9-2.6 6.25s.9 4.45 2.6 6.25"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+          <r-select class="lang-select" type="text" value="zh-TW" aria-label="语言"
+            ><r-option value="zh-TW" data-href="/zh-TW/offline-document-editor">繁體中文</r-option
+            ><r-option value="en" data-href="/offline-document-editor">EN</r-option
+            ><r-option value="zh-CN" data-href="/zh-CN/offline-document-editor">简体中文</r-option></r-select
+          >
+        </span>
+        <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">
+          <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
+        </a>
+      </nav>
+    </header>
+
+    <main class="wrap">
+      <p class="eyebrow">離線 · PWA</p>
+      <h1>無需聯網也能用的離線文件編輯器</h1>
+      <p class="lead">
+        斷網也能編輯 Word、Excel 和 PowerPoint——無論在
+        Chromebook、飛機上的筆記本，還是安卓平板。安裝一次，離線也能一直用，完全在你的裝置上執行。
+      </p>
+
+      <a class="cta" href="/?locale=zh-TW&amp;new=docx"><r-button type="primary">開啟編輯器 →</r-button></a>
+
+      <p>
+        由於所有編輯都通過 WebAssembly 在你的瀏覽器本地執行——沒有伺服器——它不需要聯網就能工作。載入一次，把它安裝成
+        App（PWA），你就能在任何地方開啟和編輯文件，即使完全離線也沒問題。你的檔案永遠不會離開你的裝置。
+      </p>
+
+      <p>
+        當你第一次載入頁面時，一個 Service Worker 會把應用外殼和 OnlyOffice
+        引擎快取到你的裝置上。此後編輯器會直接從快取啟動，因此開啟即用，並且在沒有網路連線時依然工作——在飛機上、地鐵裡，或任何
+        Wi-Fi 訊號不佳的地方。檔案從你自己的裝置開啟，也儲存到你自己的裝置上，你可以編輯 DOCX、XLSX、PPTX 和
+        CSV，並匯出為 PDF、TXT、HTML 或 CSV，全程無需網路。
+      </p>
+
+      <h2>如何操作</h2>
+      <ol>
+        <li>在聯網時開啟一次編輯器，讓 App 和引擎快取到你的裝置上。</li>
+        <li>把它安裝成 App（PWA）——使用瀏覽器的安裝選項，或在移動端選擇「新增到主螢幕」。</li>
+        <li>在沒有網路時，像啟動其他 App 一樣啟動已安裝的應用。</li>
+        <li>開啟一個 DOCX、XLSX、PPTX 或 CSV 檔案，編輯它，再重新下載——全程離線。</li>
+      </ol>
+
+      <h2>為什麼它能離線工作</h2>
+      <ul>
+        <li><strong>沒有伺服器</strong>——整個編輯器都在你的裝置上執行，因此無需任何網路連線</li>
+        <li><strong>可安裝的 PWA</strong>——新增到主螢幕或桌面，像 App 一樣啟動</li>
+        <li><strong>隨處可用</strong>——Chromebook、Windows、macOS、Linux、安卓；任何現代瀏覽器</li>
+        <li>編輯 DOCX、XLSX、PPTX 和 CSV</li>
+        <li>檔案留在本地、無需賬號、無需註冊</li>
+      </ul>
+
+      <r-card class="oss"
+        ><div class="card-body">
+          <strong>開源且可自託管。</strong> 基於 AGPL-3.0 協議——你可以核實檔案確實沒有被上傳，或者執行你自己的副本：
+          <a href="https://github.com/anomixer/document" rel="noopener">github.com/anomixer/document</a>。
+        </div></r-card
+      >
+
+      <h2 class="faq">常見問題</h2>
+      <div class="faq">
+        <h3>它真的能離線使用嗎？</h3>
+        <p>可以。載入完成後它就是一個可安裝的 PWA，在沒有網路時依然正常工作——所有編輯都在本地執行。</p>
+        <h3>它能在 Chromebook 上用嗎？</h3>
+        <p>可以。它在任何現代瀏覽器中執行——Chromebook、筆記本、Windows、macOS、Linux 和安卓。</p>
+        <h3>我的檔案會被上傳嗎？</h3>
+        <p>不會。沒有伺服器；檔案留在你的裝置上，永遠不會上傳。</p>
+        <h3>我能編輯哪些格式？</h3>
+        <p>DOCX、XLSX、PPTX 和 CSV，由 OnlyOffice 提供支援。</p>
+        <h3>我該如何把它安裝成 App？</h3>
+        <p>在 Chrome 或 Edge 的位址列使用安裝圖示，或在手機、平板上選擇「新增到主螢幕」。</p>
+        <h3>第一次使用需要聯網嗎？</h3>
+        <p>需要。先在聯網時載入一次，讓 App 和引擎快取下來；之後它就能離線執行。</p>
+        <h3>離線時我的檔案儲存在哪裡？</h3>
+        <p>檔案從你自己的裝置開啟，也儲存到你自己的裝置上——不涉及任何伺服器。</p>
+      </div>
+
+      <footer>
+        <a href="/zh-TW/">開啟編輯器</a>
+        <a href="/zh-TW/open/docx">開啟 DOCX</a>
+        <a href="/zh-TW/open/xlsx">開啟 XLSX</a>
+        <a href="/zh-TW/open/pptx">開啟 PPTX</a>
+        <a href="/zh-TW/convert/xlsx-to-csv">XLSX 轉 CSV</a>
+        <a href="/zh-TW/convert/csv-to-xlsx">CSV 轉 XLSX</a>
+        <a href="/zh-TW/no-signup-document-editor">免註冊</a>
+        <a href="/zh-TW/private-document-editor">隱私編輯器</a>
+        <a href="/zh-TW/edit-documents-without-account">免賬號</a>
+        <a href="/zh-TW/embed-document-editor">Embed API</a>
+        <a href="https://github.com/anomixer/document" rel="noopener">GitHub</a>
+        <r-theme-switch class="theme-switch" label="主題"></r-theme-switch>
+      </footer>
+    </main>
+  </body>
+</html>

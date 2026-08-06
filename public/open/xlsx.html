@@ -14,10 +14,11 @@
       name="description"
       content="Open and edit an XLSX (Excel) spreadsheet without Microsoft Excel or a 365 account. Formulas and formatting preserved, free and open source, runs in your browser — nothing is uploaded."
     />
-    <link rel="canonical" href="https://edit.chaxus.com/open/xlsx" />
-    <link rel="alternate" hreflang="en" href="https://edit.chaxus.com/open/xlsx" />
-    <link rel="alternate" hreflang="zh-CN" href="https://edit.chaxus.com/zh-CN/open/xlsx" />
-    <link rel="alternate" hreflang="x-default" href="https://edit.chaxus.com/open/xlsx" />
+    <link rel="canonical" href="https://document26.pages.dev/open/xlsx" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/open/xlsx" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/open/xlsx" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/open/xlsx" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/open/xlsx" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Online Document Editor" />
@@ -26,15 +27,15 @@
       property="og:description"
       content="Open and edit XLSX spreadsheets without Excel or an account. Formulas preserved, open source, nothing uploaded."
     />
-    <meta property="og:url" content="https://edit.chaxus.com/open/xlsx" />
-    <meta property="og:image" content="https://edit.chaxus.com/img/pwa-512.png" />
+    <meta property="og:url" content="https://document26.pages.dev/open/xlsx" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Open XLSX Without Excel — Free Online, No Upload" />
     <meta
       name="twitter:description"
       content="Open and edit XLSX spreadsheets without Excel or an account. Formulas preserved, open source, nothing uploaded."
     />
-    <meta name="twitter:image" content="https://edit.chaxus.com/img/pwa-512.png" />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
 
     <script type="application/ld+json">
       {
@@ -43,7 +44,7 @@
           {
             "@type": "WebApplication",
             "name": "Online Document Editor",
-            "url": "https://edit.chaxus.com/open/xlsx",
+            "url": "https://document26.pages.dev/open/xlsx",
             "applicationCategory": "BusinessApplication",
             "operatingSystem": "Any (web browser)",
             "isAccessibleForFree": true,
@@ -53,7 +54,7 @@
           {
             "@type": "SoftwareSourceCode",
             "name": "Online Document Editor",
-            "codeRepository": "https://github.com/ranuts/document",
+            "codeRepository": "https://github.com/anomixer/document",
             "programmingLanguage": "TypeScript",
             "license": "https://www.gnu.org/licenses/agpl-3.0.html"
           },
@@ -147,8 +148,13 @@
           {
             "@type": "BreadcrumbList",
             "itemListElement": [
-              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://edit.chaxus.com/" },
-              { "@type": "ListItem", "position": 2, "name": "Open XLSX", "item": "https://edit.chaxus.com/open/xlsx" }
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://document26.pages.dev/" },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Open XLSX",
+                "item": "https://document26.pages.dev/open/xlsx"
+              }
             ]
           }
         ]
@@ -199,12 +205,13 @@
               stroke-width="1.2"
             />
           </svg>
-          <r-select class="lang-select" type="text" value="en" aria-label="Language">
-            <r-option value="en" data-href="/open/xlsx">EN</r-option>
-            <r-option value="zh-CN" data-href="/zh-CN/open/xlsx">中文</r-option>
-          </r-select>
+          <r-select class="lang-select" type="text" value="en" aria-label="Language"
+            ><r-option value="en" data-href="/open/xlsx">EN</r-option
+            ><r-option value="zh-CN" data-href="/zh-CN/open/xlsx">简体中文</r-option
+            ><r-option value="zh-TW" data-href="/zh-TW/open/xlsx">繁體中文</r-option></r-select
+          >
         </span>
-        <a href="https://github.com/ranuts/document" rel="noopener" target="_blank">
+        <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">
           <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
         </a>
       </nav>
@@ -261,7 +268,7 @@
       <r-card class="oss"
         ><div class="card-body">
           <strong>Open source &amp; self-hostable.</strong> Under AGPL-3.0 — verify that nothing is uploaded, or run
-          your own copy: <a href="https://github.com/ranuts/document" rel="noopener">github.com/ranuts/document</a>.
+          your own copy: <a href="https://github.com/anomixer/document" rel="noopener">github.com/anomixer/document</a>.
         </div></r-card
       >
 
@@ -294,7 +301,7 @@
         <a href="/offline-document-editor">Offline</a>
         <a href="/edit-documents-without-account">No account</a>
         <a href="/embed-document-editor">Embed API</a>
-        <a href="https://github.com/ranuts/document" rel="noopener">GitHub</a>
+        <a href="https://github.com/anomixer/document" rel="noopener">GitHub</a>
         <r-theme-switch class="theme-switch" label="Theme"></r-theme-switch>
       </footer>
     </main>

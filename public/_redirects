@@ -1,8 +1,9 @@
 # Cloudflare Pages redirects (copied into dist/ by the build).
 # Canonicalize the slash-less variant of directory URLs. Cloudflare Pages
 # auto-redirects most of these, but with a 404.html present (SPA fallback off)
-# we pin the important one explicitly so /zh-CN never 404s or double-serves.
+# we pin the important ones explicitly so /zh-CN and /zh-TW never 404 or double-serve.
 /zh-CN /zh-CN/ 308
+/zh-TW /zh-TW/ 308
 
 # The comparison pages are gone (no "vs X" positioning) — send old links home.
 /vs/google-docs / 301

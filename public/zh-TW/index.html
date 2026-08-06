@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/img/64.png" rel="shortcut icon" />
+    <link rel="icon" type="image/png" href="/img/64.png" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+
+    <title>在瀏覽器開啟 DOCX、XLSX、PPT 檔案——免裝 Office 的線上檢視與編輯器</title>
+    <meta
+      name="description"
+      content="不裝 Office 也能直接在瀏覽器裡開啟、檢視 Word（DOCX）、Excel（XLSX）、PowerPoint（PPTX）和 CSV，需要時還能編輯儲存。檔案不傳伺服器、免註冊、可離線。基於 OnlyOffice。"
+    />
+    <link rel="canonical" href="https://document26.pages.dev/zh-TW/" />
+    <meta name="robots" content="index, follow" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/" />
+    <!-- No-flash theme restore: apply a forced light/dark before first paint so a
+         dark-mode visitor never sees a white flash. 'system' leaves the attributes
+         off and the token layer's media query decides. Kept inline and tiny. -->
+    <script>
+      try {
+        var t = localStorage.getItem('ran-theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.setAttribute('data-ran-theme', t);
+          document.documentElement.setAttribute('theme', t);
+        }
+      } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/ran-fonts/fonts.css" />
+    <link rel="stylesheet" href="/ran-tokens.css" />
+    <link rel="stylesheet" href="/home.css" />
+    <script src="/ranui-iife/button.iife.js" defer></script>
+    <script src="/ranui-iife/card.iife.js" defer></script>
+    <script src="/ranui-iife/select.iife.js" defer></script>
+    <script src="/ranui-iife/theme-switch.iife.js" defer></script>
+    <script src="/lang-switch.js" defer></script>
+    <script src="/open-local.js" defer></script>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="線上文件編輯器" />
+    <meta property="og:title" content="在瀏覽器開啟 DOCX、XLSX、PPT 檔案——免裝 Office 的線上檢視與編輯器" />
+    <meta
+      property="og:description"
+      content="不裝 Office 直接在瀏覽器開啟、檢視、編輯 DOCX、XLSX、PPTX 和 CSV。檔案不傳伺服器、免註冊、可離線。"
+    />
+    <meta property="og:url" content="https://document26.pages.dev/zh-TW/" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="在瀏覽器開啟 DOCX、XLSX、PPT 檔案——免裝 Office 的線上檢視與編輯器" />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "線上文件編輯器",
+        "url": "https://document26.pages.dev/zh-TW/",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "任意 (網頁瀏覽器)",
+        "description": "不裝 Office 直接在瀏覽器開啟、檢視、編輯 DOCX、XLSX、PPTX 和 CSV，檔案不傳伺服器、免註冊、可離線。基於 OnlyOffice。",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+        "sameAs": [
+          "https://github.com/anomixer/document",
+          "https://www.npmjs.com/package/@ranui/preview",
+          "https://ran.chaxus.com"
+        ]
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "我的檔案會被上傳到伺服器嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "不會。沒有服務端。檔案在你的裝置本地開啟和儲存，不會上傳——你可以在瀏覽器網路面板裡核實，或檢視原始碼。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "能編輯哪些格式？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Word(DOCX)、Excel(XLSX)、PowerPoint(PPTX) 和 CSV，基於執行在 WebAssembly 裡的 OnlyOffice。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "能離線使用嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "能。它是可安裝的 PWA——載入一次後斷網也能繼續用，因為編輯全部在你的瀏覽器本地進行。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "需要註冊賬號嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "不需要賬號、不需要註冊、不需要郵箱。開啟頁面就能編輯。"
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="gh-mark" viewBox="0 0 16 16">
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+        />
+      </symbol>
+    </svg>
+
+    <section id="landing-hero">
+      <header class="bar">
+        <div class="wrap">
+          <a class="brand" href="/"><span class="logo">文</span>文件編輯器</a>
+          <nav>
+            <a class="navlink" href="/zh-TW/offline-document-editor">離線</a>
+            <a class="navlink" href="/zh-TW/no-signup-document-editor">免註冊</a>
+            <a class="navlink gh" href="https://github.com/anomixer/document" rel="noopener" target="_blank">
+              <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
+            </a>
+            <span class="lang-wrap">
+              <svg class="langmark" aria-hidden="true" viewBox="0 0 16 16">
+                <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+                <path
+                  d="M1.75 8h12.5M8 1.75c1.7 1.8 2.6 3.9 2.6 6.25S9.7 12.45 8 14.25M8 1.75c-1.7 1.8-2.6 3.9-2.6 6.25s.9 4.45 2.6 6.25"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.2"
+                />
+              </svg>
+              <r-select class="lang-select" type="text" value="zh-TW" aria-label="语言"
+                ><r-option value="zh-TW" data-href="/zh-TW/">繁體中文</r-option
+                ><r-option value="en" data-href="/">EN</r-option
+                ><r-option value="zh-CN" data-href="/zh-CN/">简体中文</r-option></r-select
+              >
+            </span>
+          </nav>
+        </div>
+      </header>
+
+      <div class="hero wrap">
+        <div class="hero-copy">
+          <span class="chip reveal d1"><span class="dot"></span>本地優先 · <b>開源</b></span>
+          <h1 class="reveal d2">在瀏覽器裡直接開啟 Word、Excel 和 PPT，<span class="accent">檔案留在本地。</span></h1>
+          <p class="sub reveal d3">
+            沒裝 Office？任何 DOCX、XLSX、PPTX 檔案即開即看，需要時隨手編輯——全部在你的裝置本地執行，免註冊、可離線。
+          </p>
+          <div class="cta reveal d4">
+            <r-button type="primary" data-open-local="/?locale=zh-TW&amp;open=local">開啟檔案</r-button>
+            <a href="/?locale=zh-TW&amp;new=docx"><r-button>新建 Word</r-button></a>
+            <a href="/?locale=zh-TW&amp;new=xlsx"><r-button>新建 Excel</r-button></a>
+            <a href="/?locale=zh-TW&amp;new=pptx"><r-button>新建 PPT</r-button></a>
+          </div>
+          <div class="trust reveal d5">
+            <span>不傳伺服器</span><span class="sep">·</span><span>免註冊</span><span class="sep">·</span
+            ><span>可離線</span><span class="sep">·</span><span>.docx .xlsx .pptx .csv</span>
+          </div>
+        </div>
+
+        <!-- 裝飾性"正在本地編輯的文件"視窗——純 CSS、無 JS，與英文首頁共用 home.css 的樣式 -->
+        <div class="docwin reveal d3" aria-hidden="true">
+          <div class="dw-bar">
+            <span class="dw-dots"><i></i><i></i><i></i></span>
+            <span class="dw-file">報告.docx</span>
+            <span class="dw-badge">已儲存到本地 ✓</span>
+          </div>
+          <div class="dw-tabs"><span class="on">.docx</span><span>.xlsx</span><span>.pptx</span><span>.csv</span></div>
+          <div class="dw-body">
+            <div class="dw-sheet">
+              <span class="dl t"></span>
+              <span class="dl w92"></span>
+              <span class="dl w78"></span>
+              <p class="dw-text"><mark>你輸入的每一個字，都留在這臺裝置上。</mark><i class="caret"></i></p>
+              <span class="dl w85"></span>
+              <span class="dl w60"></span>
+            </div>
+            <aside class="dw-note">
+              <b>你 · 剛剛</b>
+              <span>0 位元組上傳——可在網路面板核實。</span>
+            </aside>
+          </div>
+          <div class="dw-net"><i class="ok"></i>network · 0 請求 · 0 位元組外發</div>
+        </div>
+      </div>
+
+      <!-- 最高頻場景：拿到檔案卻沒裝 Office。四個格式入口，各自有專屬落地頁。 -->
+      <div class="section wrap">
+        <div class="section-head">
+          <span class="eyebrow">開啟檔案</span>
+          <h2>沒裝 Office？沒關係。</h2>
+        </div>
+        <div class="formats">
+          <a class="fmt" href="/zh-TW/open/docx">
+            <r-card hoverable>
+              <div class="card-body">
+                <div class="k">.DOCX</div>
+                <h3>開啟 DOCX</h3>
+                <p>完整排版檢視任何 Word 文件——字型、表格、圖片都在。</p>
+                <span class="fmt-go">開啟 DOCX →</span>
+              </div>
+            </r-card>
+          </a>
+          <a class="fmt" href="/zh-TW/open/xlsx">
+            <r-card hoverable>
+              <div class="card-body">
+                <div class="k">.XLSX</div>
+                <h3>開啟 XLSX</h3>
+                <p>公式、圖表、多工作表完整呈現。</p>
+                <span class="fmt-go">開啟 XLSX →</span>
+              </div>
+            </r-card>
+          </a>
+          <a class="fmt" href="/zh-TW/open/pptx">
+            <r-card hoverable>
+              <div class="card-body">
+                <div class="k">.PPTX</div>
+                <h3>開啟 PPTX</h3>
+                <p>版式、主題、媒體都保留，直接在瀏覽器裡看。</p>
+                <span class="fmt-go">開啟 PPTX →</span>
+              </div>
+            </r-card>
+          </a>
+          <a class="fmt" href="/zh-TW/convert/xlsx-to-csv">
+            <r-card hoverable>
+              <div class="card-body">
+                <div class="k">.XLSX → .CSV</div>
+                <h3>格式互轉</h3>
+                <p>表格與 CSV 互轉，全程本地，一個位元組都不上傳。</p>
+                <span class="fmt-go">轉換檔案 →</span>
+              </div>
+            </r-card>
+          </a>
+        </div>
+      </div>
+
+      <div class="section wrap">
+        <div class="section-head">
+          <span class="eyebrow">為什麼不一樣</span>
+          <h2>隱私是設計出來的，不是承諾出來的</h2>
+        </div>
+        <div class="cards">
+          <r-card hoverable>
+            <div class="card-body">
+              <div class="k">100% 客戶端</div>
+              <h3>檔案永不離開你的裝置</h3>
+              <p>每個文件都在本地開啟、編輯和儲存，沒有伺服器可供上傳。</p>
+            </div>
+          </r-card>
+          <r-card hoverable>
+            <div class="card-body">
+              <div class="k">免註冊</div>
+              <h3>沒有任何註冊環節</h3>
+              <p>沒有郵箱、沒有登入牆，開啟頁面立即開始編輯。</p>
+            </div>
+          </r-card>
+          <r-card hoverable>
+            <div class="card-body">
+              <div class="k">PWA · 離線</div>
+              <h3>裝上它，飛機上也能用</h3>
+              <p>新增到主屏，斷網也能繼續工作。</p>
+            </div>
+          </r-card>
+          <r-card hoverable>
+            <div class="card-body">
+              <div class="k">AGPL-3.0</div>
+              <h3>開源 · 可自託管</h3>
+              <p>審計執行的每一行，或自建一份。基於 OnlyOffice。</p>
+            </div>
+          </r-card>
+        </div>
+      </div>
+
+      <div class="section wrap">
+        <div class="section-head">
+          <span class="eyebrow">流程</span>
+          <h2>怎麼用</h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="n">01</div>
+            <h3>開啟檔案</h3>
+            <p>拖入 DOCX、XLSX、PPTX 或 CSV——或新建一個空白文件。</p>
+            <span class="loc">留在本地裝置</span>
+          </div>
+          <div class="step">
+            <div class="n">02</div>
+            <h3>真正地編輯</h3>
+            <p>完整的排版、表格、圖表和公式，由 OnlyOffice 提供。</p>
+            <span class="loc">留在本地裝置</span>
+          </div>
+          <div class="step">
+            <div class="n">03</div>
+            <h3>存回本地</h3>
+            <p>匯出為同樣的格式。整個過程從未上傳。</p>
+            <span class="loc">留在本地裝置</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section wrap faq-sec">
+        <div class="section-head">
+          <span class="eyebrow">FAQ</span>
+          <h2>常見問題</h2>
+        </div>
+        <div class="faq">
+          <div class="qa">
+            <details open>
+              <summary>我的檔案會被上傳嗎？</summary>
+              <p class="a">
+                不會。沒有伺服器。檔案在你的裝置本地開啟和儲存，永遠不會傳到任何伺服器——你可以在瀏覽器網路面板裡核實，或檢視原始碼。
+              </p>
+            </details>
+            <details>
+              <summary>能編輯哪些格式？</summary>
+              <p class="a">
+                Word(DOCX)、Excel(XLSX)、PowerPoint(PPTX) 和 CSV，基於執行在 WebAssembly 裡的 OnlyOffice。
+              </p>
+            </details>
+            <details>
+              <summary>能離線使用嗎？</summary>
+              <p class="a">能。它是可安裝的 PWA——載入一次後斷網也能繼續用，因為編輯全部在你的瀏覽器本地進行。</p>
+            </details>
+            <details>
+              <summary>需要註冊賬號嗎？</summary>
+              <p class="a">不需要賬號、不需要註冊、不需要郵箱。開啟頁面就能編輯。</p>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <div class="eco">
+        <div class="wrap">
+          <span class="eco-label">
+            <svg class="gitmark" aria-hidden="true"><use href="#gh-mark"></use></svg>
+            ran 生態的一部分 · 全部開源
+          </span>
+          <nav>
+            <span class="here"><b>document26.pages.dev</b> <small>文件編輯器</small></span>
+            <a href="https://ran.chaxus.com" rel="noopener" target="_blank">
+              <b>ran.chaxus.com</b> <small>UI 元件庫</small>
+            </a>
+          </nav>
+        </div>
+      </div>
+
+      <footer class="foot wrap">
+        <span>© 2026 文件編輯器 · 在你的裝置上執行</span>
+        <nav>
+          <a href="/zh-TW/offline-document-editor">離線編輯器</a>
+          <a href="/zh-TW/no-signup-document-editor">免註冊</a>
+          <a href="/zh-TW/open/docx">開啟 DOCX</a>
+          <a href="/zh-TW/convert/xlsx-to-csv">XLSX → CSV</a>
+          <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">GitHub</a>
+        </nav>
+        <r-theme-switch
+          class="theme-switch"
+          label="主題"
+          label-system="跟隨系統"
+          label-light="淺色"
+          label-dark="深色"
+        ></r-theme-switch>
+        <span class="lic">AGPL-3.0</span>
+      </footer>
+    </section>
+  </body>
+</html>

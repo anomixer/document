@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/img/64.png" rel="shortcut icon" />
+    <link rel="icon" type="image/png" href="/img/64.png" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000" />
+
+    <title>無需 Excel 開啟 XLSX——免費線上、不傳伺服器</title>
+    <meta
+      name="description"
+      content="無需 Microsoft Excel 或 365 賬號，即可開啟和編輯 XLSX（Excel）表格。公式和格式完整保留，免費、開源，在瀏覽器中執行——檔案始終留在本地。"
+    />
+    <link rel="canonical" href="https://document26.pages.dev/zh-TW/open/xlsx" />
+    <link rel="alternate" hreflang="en" href="https://document26.pages.dev/open/xlsx" />
+    <link rel="alternate" hreflang="zh-TW" href="https://document26.pages.dev/zh-TW/open/xlsx" />
+    <link rel="alternate" hreflang="x-default" href="https://document26.pages.dev/open/xlsx" />
+    <link rel="alternate" hreflang="zh-CN" href="https://document26.pages.dev/zh-CN/open/xlsx" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Online Document Editor" />
+    <meta property="og:title" content="無需 Excel 開啟 XLSX——免費線上、不傳伺服器" />
+    <meta
+      property="og:description"
+      content="無需 Excel 或賬號即可開啟和編輯 XLSX 表格。公式完整保留，開源，檔案始終留在本地。"
+    />
+    <meta property="og:url" content="https://document26.pages.dev/zh-TW/open/xlsx" />
+    <meta property="og:image" content="https://document26.pages.dev/img/pwa-512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="無需 Excel 開啟 XLSX——免費線上、不傳伺服器" />
+    <meta
+      name="twitter:description"
+      content="無需 Excel 或賬號即可開啟和編輯 XLSX 表格。公式完整保留，開源，檔案始終留在本地。"
+    />
+    <meta name="twitter:image" content="https://document26.pages.dev/img/pwa-512.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "Online Document Editor",
+            "url": "https://document26.pages.dev/zh-TW/open/xlsx",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Any (web browser)",
+            "isAccessibleForFree": true,
+            "description": "在瀏覽器中開啟和編輯 XLSX（Excel）表格，無需 Excel、無需賬號、不傳伺服器。",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "Online Document Editor",
+            "codeRepository": "https://github.com/anomixer/document",
+            "programmingLanguage": "TypeScript",
+            "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "我能在沒有 Excel 的情況下開啟 XLSX 檔案嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。這個編輯器直接在你的瀏覽器中開啟 XLSX 表格，因此你無需 Microsoft Excel 或 365 訂閱。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "公式和格式會被保留嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "會。它使用 OnlyOffice 引擎，因此單元格公式、數字格式和樣式都會被保留，而不會被壓平成純數值。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "我的表格會被上傳嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "不會。一切都通過 WebAssembly 在你的瀏覽器本地執行，你的檔案永遠不會離開你的裝置。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "我能把它匯出為 CSV 嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "可以。開啟表格後，你可以重新下載為 XLSX 或 CSV。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "它支援舊的 .xls 檔案嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "支援。它用同一個引擎開啟現代的 .xlsx 格式，以及較舊的 .xls 和純 .csv 檔案。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "我的公式會重新計算嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "會。它是一個真正的表格計算引擎，因此公式會隨你的編輯重新計算——而不是靜態的數值快照。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "支援含多個工作表的工作簿嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "支援。含多個標籤頁的工作簿會連同所有工作表一起開啟，你可以在它們之間切換。"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "HowTo",
+            "name": "如何無需 Excel 開啟 XLSX 檔案",
+            "step": [
+              {
+                "@type": "HowToStep",
+                "name": "開啟編輯器",
+                "text": "點選「開啟你的 XLSX」，在瀏覽器中啟動編輯器。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "選擇檔案",
+                "text": "從你的裝置中選擇一個 .xlsx 檔案，或將它拖放到頁面上。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "檢視或編輯",
+                "text": "它用 OnlyOffice 引擎開啟，因此單元格、公式和格式都會被保留，公式會隨你的編輯重新計算。"
+              },
+              {
+                "@type": "HowToStep",
+                "name": "重新下載",
+                "text": "完成後，把表格重新下載為 XLSX 或 CSV 以儲存修改。"
+              }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "首頁", "item": "https://document26.pages.dev/" },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "開啟 XLSX",
+                "item": "https://document26.pages.dev/zh-TW/open/xlsx"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <!-- No-flash theme restore: apply a forced light/dark before first paint so a
+         dark-mode visitor never sees a white flash. 'system' leaves the attributes
+         off and the token layer's media query decides. Kept inline and tiny. -->
+    <script>
+      try {
+        var t = localStorage.getItem('ran-theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.setAttribute('data-ran-theme', t);
+          document.documentElement.setAttribute('theme', t);
+        }
+      } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="/ran-fonts/fonts.css" />
+    <link rel="stylesheet" href="/ran-tokens.css" />
+    <link rel="stylesheet" href="/landing.css" />
+    <script src="/ranui-iife/button.iife.js" defer></script>
+    <script src="/ranui-iife/card.iife.js" defer></script>
+    <script src="/ranui-iife/select.iife.js" defer></script>
+    <script src="/ranui-iife/theme-switch.iife.js" defer></script>
+    <script src="/lang-switch.js" defer></script>
+  </head>
+
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="gh-mark" viewBox="0 0 16 16">
+        <path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+        />
+      </symbol>
+    </svg>
+
+    <header class="bar">
+      <a class="brand" href="/"><span class="logo">文</span>文件編輯器</a>
+      <nav>
+        <span class="lang-wrap">
+          <svg class="langmark" aria-hidden="true" viewBox="0 0 16 16">
+            <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M1.75 8h12.5M8 1.75c1.7 1.8 2.6 3.9 2.6 6.25S9.7 12.45 8 14.25M8 1.75c-1.7 1.8-2.6 3.9-2.6 6.25s.9 4.45 2.6 6.25"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+            />
+          </svg>
+          <r-select class="lang-select" type="text" value="zh-TW" aria-label="语言"
+            ><r-option value="zh-TW" data-href="/zh-TW/open/xlsx">繁體中文</r-option
+            ><r-option value="en" data-href="/open/xlsx">EN</r-option
+            ><r-option value="zh-CN" data-href="/zh-CN/open/xlsx">简体中文</r-option></r-select
+          >
+        </span>
+        <a href="https://github.com/anomixer/document" rel="noopener" target="_blank">
+          <svg class="ghmark" aria-hidden="true"><use href="#gh-mark"></use></svg> GitHub
+        </a>
+      </nav>
+    </header>
+
+    <main class="wrap">
+      <p class="eyebrow">開啟 · .xlsx</p>
+      <h1>無需 Excel 開啟 XLSX 檔案</h1>
+      <p class="lead">
+        收到一個 <strong>.xlsx</strong> 表格，卻沒裝 Excel——或者不想為 365
+        付費？直接在瀏覽器裡開啟，公式原樣保留。無需安裝，檔案始終留在本地。
+      </p>
+
+      <a class="cta" href="/?locale=zh-TW&amp;new=docx"><r-button type="primary">開啟你的 XLSX →</r-button></a>
+
+      <p>
+        XLSX 是 Microsoft Excel 的格式。這個編輯器用 OnlyOffice 引擎開啟它，因此單元格公式、數字格式、顏色和多個工作表
+        都能完整保留——它是一個真正的表格，而不是隻讀表格。它通過 WebAssembly 在本地執行，檔案始終留在你的裝置上。
+      </p>
+
+      <p>
+        OnlyOffice 表格引擎被編譯為
+        WebAssembly，執行在你的瀏覽器標籤頁內。你的檔案會被直接從磁碟讀入記憶體——沒有上傳，也沒有伺服器——因此私密資料永遠不會離開你的裝置。由於它是一個即時計算引擎，而不是靜態預覽，公式會隨你的編輯重新計算。它既能讀取現代的
+        <strong>.xlsx</strong> 格式，也能讀取較舊的 <strong>.xls</strong> 和純 <strong>.csv</strong>，並能匯出回 XLSX 或
+        CSV。
+      </p>
+
+      <h2>如何操作</h2>
+      <ol>
+        <li>點選<strong>開啟你的 XLSX</strong>，在瀏覽器中啟動編輯器。</li>
+        <li>從你的裝置中選擇一個 <strong>.xlsx</strong> 檔案，或將它拖放到頁面上。</li>
+        <li>它會用 OnlyOffice 引擎開啟——檢視它，或編輯單元格並看著公式重新計算。</li>
+        <li>完成後，把它重新下載為 XLSX 或 CSV。</li>
+      </ol>
+
+      <h2>你可以做什麼</h2>
+      <ul>
+        <li>開啟任何 <strong>.xlsx</strong>（以及 .xls、.csv）檔案，公式完整保留</li>
+        <li>編輯單元格，再重新下載為 XLSX 或 CSV</li>
+        <li>無需 Microsoft Excel，也無需 365 訂閱</li>
+        <li>不傳伺服器——你的表格永遠不會離開你的裝置</li>
+        <li>可作為可安裝 App 離線使用</li>
+      </ul>
+
+      <p>
+        它既適合快速地只讀檢視，也適合真正的工作：排序某一列、修正某個數字、增加一行或一個公式，然後以相同格式把檔案交回。當有人給你發來一份預算或資料匯出，而你又不想安裝
+        Excel、不想為 365 付費、也不想把寧願保密的數字交給某個隨機的網頁轉換器時，這就很方便。
+      </p>
+
+      <r-card class="oss"
+        ><div class="card-body">
+          <strong>開源且可自託管。</strong> 基於 AGPL-3.0 協議——你可以核實檔案確實沒有被上傳，或者執行你自己的副本：
+          <a href="https://github.com/anomixer/document" rel="noopener">github.com/anomixer/document</a>。
+        </div></r-card
+      >
+
+      <h2 class="faq">常見問題</h2>
+      <div class="faq">
+        <h3>我能在沒有 Excel 的情況下開啟 XLSX 檔案嗎？</h3>
+        <p>可以。它直接在你的瀏覽器中開啟 XLSX——無需 Excel 或 365 訂閱。</p>
+        <h3>公式和格式會被保留嗎？</h3>
+        <p>會。OnlyOffice 引擎會保留公式、數字格式和樣式。</p>
+        <h3>我的表格會被上傳嗎？</h3>
+        <p>不會。它通過 WebAssembly 在本地執行，永遠不會離開你的裝置。</p>
+        <h3>我能把它匯出為 CSV 嗎？</h3>
+        <p>可以。開啟後重新下載為 XLSX 或 CSV。</p>
+        <h3>它支援舊的 .xls 檔案嗎？</h3>
+        <p>支援。它用同一個引擎開啟 .xlsx、較舊的 .xls 和純 .csv 檔案。</p>
+        <h3>我的公式會重新計算嗎？</h3>
+        <p>會。它是一個真正的表格引擎，因此公式會隨你的編輯重新計算——而不是靜態快照。</p>
+        <h3>支援含多個工作表的工作簿嗎？</h3>
+        <p>支援。含多個標籤頁的工作簿會連同所有工作表一起開啟。</p>
+      </div>
+
+      <footer>
+        <a href="/zh-TW/">開啟編輯器</a>
+        <a href="/zh-TW/open/docx">開啟 DOCX</a>
+        <a href="/zh-TW/open/pptx">開啟 PPTX</a>
+        <a href="/zh-TW/convert/xlsx-to-csv">XLSX 轉 CSV</a>
+        <a href="/zh-TW/convert/csv-to-xlsx">CSV 轉 XLSX</a>
+        <a href="/zh-TW/no-signup-document-editor">免註冊</a>
+        <a href="/zh-TW/private-document-editor">隱私編輯器</a>
+        <a href="/zh-TW/offline-document-editor">離線</a>
+        <a href="/zh-TW/edit-documents-without-account">免賬號</a>
+        <a href="/zh-TW/embed-document-editor">Embed API</a>
+        <a href="https://github.com/anomixer/document" rel="noopener">GitHub</a>
+        <r-theme-switch class="theme-switch" label="主題"></r-theme-switch>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-/* Landing hero for the homepage (edit.chaxus.com) — native ranui product style.
+/* Landing hero for the homepage (document26.pages.dev) — native ranui product style.
    home.css holds ONLY page layout/composition (grid, spacing rhythm, type scale,
    responsive) — the things tokens and components can't provide. Every design VALUE
    comes from the ranui token layer (public/ran-tokens.css): colours --ran-color-*,
@@ -20,6 +20,18 @@
    new design language, so nothing here looked wrong until someone happened to notice.
    Reading `var(--ran-color-text)` at the call site says which token is in play; reading
    `var(--ink)` requires a lookup. Only genuinely local values keep a name below. */
+
+/* Static localized homepages (zh-TW/zh-CN) have no bundler and no tailwind
+   preflight, so they miss the html/body reset the app homepage gets from
+   base.css: the default 8px body margin painted a white frame around the hero
+   (and auto height let the page background peek below 100vh). Reset here so
+   the three homepages render identically. */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--ran-color-bg);
+}
 
 #landing-hero {
   /* editor-selection ground: theme-flipped by ran-tokens (light #dfefff / dark #002f62) */
@@ -115,7 +127,7 @@
 }
 #landing-hero r-select.lang-select {
   display: inline-block;
-  min-width: 84px;
+  min-width: 108px;
   font-size: 14px;
 }
 /* hide the raw option list pre-upgrade; the reserved width avoids layout shift */
