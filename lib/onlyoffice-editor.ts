@@ -38,6 +38,37 @@ type EmbeddedSaveRequest = {
 
 let embeddedSaveRequest: EmbeddedSaveRequest | null = null;
 
+export function isDarkMode(): boolean {
+  if (typeof document === 'undefined') return false;
+  const themeAttr =
+    document.documentElement.getAttribute('data-ran-theme') || document.documentElement.getAttribute('theme');
+  if (themeAttr === 'dark') return true;
+  if (themeAttr === 'light') return false;
+  try {
+    const saved = localStorage.getItem('ran-theme');
+    if (saved === 'dark') return true;
+    if (saved === 'light') return false;
+  } catch {
+    // Ignore storage errors in restricted contexts
+  }
+  return (
+    typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
+}
+
+if (typeof window !== 'undefined') {
+  document.addEventListener('ran-theme-switch-sync', () => {
+    const dark = isDarkMode();
+    const themeId = dark ? 'theme-dark' : 'theme-classic-light';
+    try {
+      localStorage.setItem('ui-theme-id', themeId);
+      localStorage.setItem('content-theme', dark ? 'dark' : 'light');
+    } catch {
+      // Ignore storage errors
+    }
+  });
+}
+
 export function getSavedFileMimeType(fileName: string): string {
   const extension = fileName.split('.').pop()?.toLowerCase() || '';
   const mimeMap: Record<string, string> = {
@@ -370,6 +401,15 @@ export function createEditorInstance(config: {
     await new Promise((resolve) => setTimeout(resolve, cleanupDelay));
 
     const editorLang = getOnlyOfficeLang();
+    const isDark = isDarkMode();
+    const uiTheme = isDark ? 'theme-dark' : 'theme-classic-light';
+    try {
+      localStorage.setItem('ui-theme-id', uiTheme);
+      localStorage.setItem('content-theme', isDark ? 'dark' : 'light');
+    } catch {
+      // Ignore storage errors
+    }
+
     console.log('Creating new editor instance for:', fileName, 'type:', fileType);
 
     try {
@@ -395,6 +435,7 @@ export function createEditorInstance(config: {
             name: 'Guest',
           },
           customization: {
+            uiTheme: uiTheme,
             help: false,
             about: false,
             hideRightMenu: true,
