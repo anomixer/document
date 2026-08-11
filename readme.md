@@ -30,8 +30,19 @@ A privacy-first, browser-based document editor powered by OnlyOffice. Edit DOCX,
 - 🚀 **No server required** — pure frontend, deploy anywhere
 - 🌐 **Open from URL** — load documents via `?src=` or `?file=` parameters
 - 📦 **PWA support** — install and use offline
-- 🌍 **Multi-language** — English, Chinese (Simplified), Chinese (Traditional)
+- 🌍 **Multi-language** — English, Chinese (Simplified), Chinese (Traditional) with smart auto-detection
 - 🧩 **Embeddable** — full postMessage API for iframe integration
+
+---
+
+## ⚡ Improvements over Upstream (`anomixer/document` vs Upstream)
+
+| Feature / Fix                     | Upstream (`chaxus/document`)                               | Our Fork (`anomixer/document`)                                                            |
+| :-------------------------------- | :--------------------------------------------------------- | :---------------------------------------------------------------------------------------- |
+| **Locale Auto-Detection**         | ⚠️ Fallback issues (selecting EN still loads Chinese UI)   | 🌐 **Smart Auto-Detect**: Seamless `EN`, `zh-CN`, `zh-TW` switching preserving URL params |
+| **Word English Mode**             | ❌ Crashes on opening File menu (`TypeError: textContent`) | 🛠️ **Fixed**: Restored missing English translation keys                                   |
+| **Traditional Chinese (`zh-TW`)** | ❌ Omitted / Unsupported                                   | 🇹🇼 **Full Support**: OpenCC `s2twp` bundles & `LCID 1028` regional settings               |
+| **Desktop Application**           | ❌ Web-only                                                | 🖥️ **Tauri App**: Native Windows desktop executable (`.exe`)                              |
 
 ---
 
