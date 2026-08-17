@@ -163,12 +163,28 @@ export class X2TConverter {
   /**
    * Load core fonts into WASM FS for PDF rendering. Called once per session.
    * Without fonts, x2t generates a PDF with invisible (empty) text.
+   * CJK (Chinese/Japanese/Korean) fonts are required for Chinese PDF output.
    */
   private async loadFontsForPdf(): Promise<void> {
     if (this.fontsLoaded || !this.x2tModule) return;
-    const fontNames = ['DejaVuSans.ttf', 'DejaVuSans-Bold.ttf', 'LiberationSans-Regular.ttf'];
+    // Latin fallback fonts (required for Western text)
+    const latinFonts = ['DejaVuSans.ttf', 'DejaVuSans-Bold.ttf', 'LiberationSans-Regular.ttf'];
+    // CJK fonts: SC=Simplified Chinese, TC=Traditional Chinese, JP=Japanese, KR=Korean
+    // NotoSansSC-VF is a variable font with full Simplified Chinese coverage.
+    // NotoSerifSC-VF provides the Song/Ming style equivalent to SimSun.
+    // NotoSansTC-VF provides Traditional Chinese glyphs that NotoSansSC lacks.
+    const cjkFonts = [
+      'NotoSansSC-VF.ttf',
+      'NotoSerifSC-VF.ttf',
+      'NotoSansTC-VF.ttf',
+      'NotoSerifTC-VF.ttf',
+      'NotoSansJP-VF.ttf',
+      'NotoSerifJP-VF.ttf',
+      'NotoSansKR-VF.ttf',
+      'NotoSerifKR-VF.ttf',
+    ];
     await Promise.all(
-      fontNames.map(async (name) => {
+      [...latinFonts, ...cjkFonts].map(async (name) => {
         try {
           const res = await fetch(`${BASE_PATH}fonts/${name}`);
           if (!res.ok) return;
