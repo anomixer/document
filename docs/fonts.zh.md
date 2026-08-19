@@ -26,3 +26,13 @@ Arial 其他变体：
 查找任意字体的索引，请查阅 `AllFonts.js` 中的 `__fonts_infos` 数组。
 
 > 请仅使用开源字体或拥有合法授权的字体。
+
+## PDF / 列印导出（x2t）—— 中文(CJK)限制
+
+上面这些字体是**编辑器显示**（Word/Excel/PPT 在浏览器里渲染）用的。**PDF / 列印成 PDF 走的是另一條路**：由 `x2t` 转换器（WASM）产出，不是编辑器，它照 **x2t 内建的字形表**渲染。
+
+- x2t 内建表只有西文/拉丁字体（`DejaVuSans`、`LiberationSans`），**没有任何 CJK 字体**，而且它只查 `font_selection.bin` 索引加那三个拉丁字体。
+- 结果：**PDF 输出里的中/日/韩文字不显示**（缺字或乱码），即使 `public/fonts/` 里有 CJK 字体（如 `NotoSans*`）。已实测：开源 Noto → 中文全缺；Noto 化名成 "SimSun" → 乱码字；连真正的微软 SimSun / 微软雅黑 → 仍乱码。这是 x2t 引擎限制，不是 code bug。
+- v9 分支（commit `1838cf298`）用真 SimSun(017)/微软雅黑(016)/Droid(130) catalog + `PDF_FONT_MANIFEST` 别名清单 + `font-catalog.mjs`（XOR 线格式）+ `m_nFormatTo=513` 来处理，但**其测试只断言字体被写进 WASM FS，从没有真的渲染 PDF 确认中文出现**。所以**升 v9 尚未被验证能修好 PDF-CJK**。
+
+详见 [2026-08-19-pdf-cjk-export-limitation.md](explorations/2026-08-19-pdf-cjk-export-limitation.md)（完整调查、v7/v9 binary 差异、后续计划 b1：build 并渲染 v9 确认它到底能不能产出 CJK PDF）。
