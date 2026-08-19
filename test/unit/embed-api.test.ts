@@ -179,6 +179,31 @@ describe('embed-api', () => {
       expectMessagePosted(postMessageSpy, 'document:error', 'err-1', { message: 'Save failed' });
     });
 
+    // GitHub #4 "save to remote server": the parent page's documented recovery path
+    // is listening for this success payload and uploading `file` itself.
+    it('posts document:saved with the saved File and its metadata (#4)', async () => {
+      window.history.pushState({}, '', '/?embed=1');
+      const savedFile = new File(['xlsx bytes'], 'report.xlsx', {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      mockRequestSaveDocument.mockResolvedValueOnce(savedFile);
+      const { initEmbedApi } = await import('../../lib/embed-api');
+      initEmbedApi();
+
+      await dispatchMessage({ type: 'document:save', id: 'save-1', payload: { targetExt: 'xlsx' } });
+
+      expect(mockRequestSaveDocument).toHaveBeenCalledWith(
+        'xlsx',
+        expect.objectContaining({ returnOriginalOnTimeout: false }),
+      );
+      expectMessagePosted(postMessageSpy, 'document:saved', 'save-1', {
+        file: savedFile,
+        fileName: 'report.xlsx',
+        mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        size: savedFile.size,
+      });
+    });
+
     it('opens a document from url payload', async () => {
       window.history.pushState({}, '', '/?embed=1');
       const { initEmbedApi } = await import('../../lib/embed-api');
@@ -250,6 +275,30 @@ describe('embed-api', () => {
       const [callArg] = mockHandleDocumentOperation.mock.calls.at(-1)!;
       expect(callArg.fileName).toBe('slide.pptx');
       expectMessagePosted(postMessageSpy, 'document:opened', 'uint8-1');
+    });
+
+    it('decodes a base64 string payload (via "data" key) into a File', async () => {
+      const original = new Uint8Array([0x50, 0x4b, 0x03, 0x04, 1, 2, 3]);
+      const base64 = btoa(String.fromCharCode(...original));
+
+      await openWithPayload({ data: base64, fileName: 'from-base64.docx' }, 'base64-1');
+
+      const [callArg] = mockHandleDocumentOperation.mock.calls.at(-1)!;
+      expect(callArg.fileName).toBe('from-base64.docx');
+      const bytes = new Uint8Array(await callArg.file.arrayBuffer());
+      expect(Array.from(bytes)).toEqual(Array.from(original));
+      expectMessagePosted(postMessageSpy, 'document:opened', 'base64-1');
+    });
+
+    it('strips a data-URL prefix before decoding a base64 payload', async () => {
+      const original = new Uint8Array([1, 2, 3, 4]);
+      const base64 = btoa(String.fromCharCode(...original));
+
+      await openWithPayload({ data: `data:application/octet-stream;base64,${base64}`, fileName: 'x.docx' }, 'base64-2');
+
+      const [callArg] = mockHandleDocumentOperation.mock.calls.at(-1)!;
+      const bytes = new Uint8Array(await callArg.file.arrayBuffer());
+      expect(Array.from(bytes)).toEqual(Array.from(original));
     });
 
     it('uses default filename "document.xlsx" when no name is supplied', async () => {

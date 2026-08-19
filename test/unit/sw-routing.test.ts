@@ -16,8 +16,7 @@ import { describe, expect, it } from 'vitest';
 const FONT_REGEX = /\.(ttf|woff2?|otf|eot)(\?.*)?$/;
 
 /** Keep in sync with DEPLOY_COUPLED in public/sw.js and the no-cache group in public/_headers. */
-const DEPLOY_COUPLED =
-  /^\/(?:home|landing)\.css$|^\/(?:lang-switch|onlyoffice-v7-iframe-patch)\.js$|^\/ranui-iife\/|\/web-apps\/apps\/(?:document|spreadsheet|presentation)editor\/main\/app-loader\.js$/;
+const DEPLOY_COUPLED = /^\/(?:home|landing)\.css$|^\/lang-switch\.js$|^\/ranui-iife\//;
 
 const isHtmlRequest = (mode: string, pathname: string): boolean =>
   mode === 'navigate' || pathname.endsWith('.html') || pathname === '/' || pathname.endsWith('/');
@@ -35,6 +34,7 @@ function swShouldHandle(method: string, urlStr: string): boolean {
   if (url.origin !== ORIGIN) return false;
   if (url.searchParams.has('file') || url.searchParams.has('src')) return false;
   if (FONT_REGEX.test(url.pathname)) return false;
+  if (url.pathname.includes('/sdkjs/common/spell/')) return false;
   return true;
 }
 
@@ -83,6 +83,15 @@ describe('SW fetch routing', () => {
       ['/fonts/legacy.eot', '.eot'],
       ['/fonts/font.ttf?v=123', '.ttf with query string'],
     ])('%s (%s)', (pathname) => {
+      expect(swShouldHandle('GET', `${ORIGIN}${pathname}`)).toBe(false);
+    });
+  });
+
+  describe('spellchecker engine is not intercepted (cold-profile hang prevention)', () => {
+    // The spell engine is importScripts'd from inside a dedicated worker
+    // during the editor's first boot; routing it through a just-activated SW
+    // hangs forever on a cold profile and leaves every save/export broken.
+    it.each(['/sdkjs/common/spell/spell/spell.js', '/sdkjs/common/spell/spell/spell.wasm'])('%s', (pathname) => {
       expect(swShouldHandle('GET', `${ORIGIN}${pathname}`)).toBe(false);
     });
   });
@@ -137,7 +146,6 @@ describe('deploy-coupled assets use network-first', () => {
       '/home.css',
       '/landing.css',
       '/lang-switch.js',
-      '/onlyoffice-v7-iframe-patch.js',
       '/ranui-iife/button.iife.js',
       '/ranui-iife/card.iife.js',
     ]) {
@@ -166,22 +174,6 @@ describe('deploy-coupled assets use network-first', () => {
     // Hundreds of files; revalidating each on every load is exactly what SWR exists to avoid.
     expect(strategyFor('/web-apps/apps/documenteditor/main/index.html')).toBe('network-first'); // .html
     expect(strategyFor('/sdkjs/word/sdk-all.js')).toBe('stale-while-revalidate');
-  });
-
-  it('serves the editor app-loader.js network-first so the language bundle is never stale', () => {
-    // app-loader.js is the OnlyOffice editor bootstrap that requires the stock `app`
-    // (Simplified/English) or `app.zh-tw` (Traditional) language bundle. It must never be
-    // served stale, or the editor silently falls back to the built-in Simplified app.js.
-    expect(strategyFor('/web-apps/apps/documenteditor/main/app-loader.js')).toBe('network-first');
-    expect(strategyFor('/web-apps/apps/spreadsheeteditor/main/app-loader.js')).toBe('network-first');
-    expect(strategyFor('/web-apps/apps/presentationeditor/main/app-loader.js')).toBe('network-first');
-  });
-
-  it('keeps the editor language bundles themselves on stale-while-revalidate', () => {
-    // app.js / app.zh-tw.js are large (multi-MB), content-stable per deploy, and fingerprinted
-    // by our feature so the loader targets them by name — SWR (fast, cached) is appropriate.
-    expect(strategyFor('/web-apps/apps/documenteditor/main/app.js')).toBe('stale-while-revalidate');
-    expect(strategyFor('/web-apps/apps/documenteditor/main/app.zh-tw.js')).toBe('stale-while-revalidate');
   });
 
   it('does not match a lookalike path outside the group', () => {

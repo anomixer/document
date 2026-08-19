@@ -1,4 +1,4 @@
-import { getCookie, getQuery, localStorageGetItem, localStorageSetItem } from 'ranuts/utils';
+import { getAllQueryString, getCookie, localStorageGetItem, localStorageSetItem } from 'ranuts/utils';
 
 /**
  * Internationalization configuration
@@ -51,6 +51,9 @@ export interface I18nMessages {
   unsupportedFileType: string;
   invalidFileObject: string;
   documentOperationFailed: string;
+  editorErrorToast: string;
+  editorErrorFormatMismatch: string;
+  editorErrorOpenFailed: string;
 
   // AI agent panel
   agentTitle: string;
@@ -106,6 +109,9 @@ const messages: Record<Language, I18nMessages> = {
     unsupportedFileType: '不支持的文件类型：',
     invalidFileObject: '无效的文件对象',
     documentOperationFailed: '文档操作失败：',
+    editorErrorToast: '文档处理出错',
+    editorErrorFormatMismatch: '文件内容与扩展名不一致，请确认文件格式后重试',
+    editorErrorOpenFailed: '文件无法打开：可能已损坏、格式不受支持，或内容与扩展名不符',
     agentTitle: 'AI 助手',
     agentOpenTip: '打开 AI 助手',
     agentSettings: '设置',
@@ -156,6 +162,9 @@ const messages: Record<Language, I18nMessages> = {
     unsupportedFileType: '不支援的檔案型別：',
     invalidFileObject: '無效的檔案物件',
     documentOperationFailed: '文件操作失敗：',
+    editorErrorToast: '文件處理出錯',
+    editorErrorFormatMismatch: '文件內容與副檔名不一致，請確認文件格式後再試',
+    editorErrorOpenFailed: '文件無法開啟：可能已損毀、格式不受支援，或內容與副檔名不符',
     agentTitle: 'AI 助手',
     agentOpenTip: '開啟 AI 助手',
     agentSettings: '設定',
@@ -206,6 +215,10 @@ const messages: Record<Language, I18nMessages> = {
     unsupportedFileType: 'Unsupported file type: ',
     invalidFileObject: 'Invalid file object',
     documentOperationFailed: 'Document operation failed: ',
+    editorErrorToast: 'Document error',
+    editorErrorFormatMismatch: 'The file content does not match its extension; check the file format and try again',
+    editorErrorOpenFailed:
+      'The file could not be opened: it may be corrupted, in an unsupported format, or not what its extension says',
     agentTitle: 'AI Assistant',
     agentOpenTip: 'Open AI Assistant',
     agentSettings: 'Settings',
@@ -260,7 +273,7 @@ class I18n {
    * Get URL parameter by name (using ranuts utility)
    */
   private getUrlParameter(name: string): string | null {
-    return getQuery()?.[name] || null;
+    return getAllQueryString()?.[name] || null;
   }
 
   /**

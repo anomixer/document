@@ -7,8 +7,125 @@ import type {
   DocumentType,
   EmscriptenModule,
 } from '@ranuts/shared/document-types';
-import { BASE_PATH, DOCUMENT_TYPE_MAP } from '@ranuts/shared/document-utils';
+import { BASE_PATH, DOCUMENT_TYPE_MAP, getDocumentMimeType } from '@ranuts/shared/document-utils';
 import { extractDocxMediaUrls } from './docx-zip';
+
+// x2t input-format constant for the editor's canvas render stream. When the
+// editor exports via "Print to PDF" (and similar render-based paths) it emits a
+// stream of drawing commands instead of a serialized document, and that stream
+// carries no format signature, so x2t must be told the input format explicitly.
+export const CANVAS_PDF_INPUT_FORMAT = 8196;
+
+// x2t output-format constant for PDF (AVS_OFFICESTUDIO_FILE_CROSSPLATFORM_PDF).
+// Declared explicitly because x2t cannot infer the conversion direction from
+// file extensions alone when the input is a canvas render stream.
+export const PDF_OUTPUT_FORMAT = 513;
+
+// Serialized editor documents start with a 4-byte engine signature.
+const EDITOR_BIN_SIGNATURES = new Set(['DOCY', 'XLSY', 'PPTY', 'VSDY']);
+
+export function hasEditorBinSignature(bin: Uint8Array): boolean {
+  if (bin.length < 4) return false;
+  return EDITOR_BIN_SIGNATURES.has(String.fromCharCode(bin[0]!, bin[1]!, bin[2]!, bin[3]!));
+}
+
+// The v9 engine's offline save trigger emits a finished OOXML document (a ZIP
+// container starting with "PK\x03\x04"), not an editor bin at all.
+export function isZipContainer(bin: Uint8Array): boolean {
+  return bin.length >= 4 && bin[0] === 0x50 && bin[1] === 0x4b && bin[2] === 0x03 && bin[3] === 0x04;
+}
+
+/**
+ * True when the bytes are an HTML document rather than a real Office file.
+ * Web systems commonly export an HTML <table> under a .xls/.xlsx name; Excel
+ * opens those, but the bundled x2t.wasm has its HTML importer stubbed out and
+ * aborts on them (missing CHtmlFile2), so they must be routed through SheetJS
+ * instead. Only the leading bytes are inspected (after BOM/whitespace).
+ */
+export function isHtmlDocument(bin: Uint8Array): boolean {
+  if (bin.length < 8 || isZipContainer(bin)) return false;
+  let start = 0;
+  if (bin[0] === 0xef && bin[1] === 0xbb && bin[2] === 0xbf) start = 3;
+  // UTF-16 BOM: treat as not-HTML here (rare for these exports).
+  const head = new TextDecoder('latin1').decode(bin.subarray(start, start + 2048)).replace(/^\s+/, '');
+  return /^<(!doctype\s+html|html|head|body|table|meta|\?xml[^>]*>\s*<html)/i.test(head);
+}
+
+const FILE_DESCRIPTION_MAP: Record<string, string> = {
+  docx: 'Word Document',
+  doc: 'Word 97-2003 Document',
+  odt: 'OpenDocument Text',
+  pdf: 'PDF Document',
+  xlsx: 'Excel Workbook',
+  xls: 'Excel 97-2003 Workbook',
+  ods: 'OpenDocument Spreadsheet',
+  pptx: 'PowerPoint Presentation',
+  ppt: 'PowerPoint 97-2003 Presentation',
+  odp: 'OpenDocument Presentation',
+  txt: 'Text Document',
+  rtf: 'Rich Text Format',
+  csv: 'CSV File',
+};
+
+/**
+ * Save a finished file to the user's disk: File System Access API when
+ * available (native save dialog, success toast), plain anchor download
+ * otherwise. A user-cancelled dialog resolves silently; any other failure
+ * rejects so the caller can surface it. Shared by the v7 convert-and-download
+ * path and the v9 file-stream save path (lib/onlyoffice-editor.ts).
+ */
+export async function saveFileToDisk(data: Blob | Uint8Array, fileName: string, mimeType?: string): Promise<void> {
+  const picker = (
+    window as unknown as {
+      showSaveFilePicker?: (opts: {
+        suggestedName: string;
+        types: Array<{ description: string; accept: Record<string, string[]> }>;
+      }) => Promise<{
+        createWritable: () => Promise<{ write: (d: Blob | Uint8Array) => Promise<void>; close: () => Promise<void> }>;
+      }>;
+    }
+  ).showSaveFilePicker;
+
+  if (typeof picker !== 'function') {
+    const blob = data instanceof Blob ? data : new Blob([data as BlobPart]);
+    const url = await createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+    return;
+  }
+
+  try {
+    const extension = fileName.split('.').pop()?.toLowerCase() || '';
+    const detectedMimeType = mimeType || getDocumentMimeType(fileName);
+    const fileHandle = await picker.call(window, {
+      suggestedName: fileName,
+      types: [
+        {
+          description: FILE_DESCRIPTION_MAP[extension] || 'Document',
+          accept: { [detectedMimeType]: [`.${extension}`] },
+        },
+      ],
+    });
+    const writable = await fileHandle.createWritable();
+    await writable.write(data);
+    await writable.close();
+    // ranui/message registers a global `window.message` toast API (untyped).
+    (window as unknown as { message?: { success?: (msg: string) => void } }).message?.success?.(
+      `${t('fileSavedSuccess')}${fileName}`,
+    );
+  } catch (error) {
+    if ((error as Error).name === 'AbortError') return;
+    throw error;
+  }
+}
 
 const MIME_MAP: Record<string, string> = {
   gif: 'image/gif',
@@ -161,19 +278,81 @@ export class X2TConverter {
   }
 
   /**
-   * Load core fonts into WASM FS for PDF rendering. Called once per session.
-   * Without fonts, x2t generates a PDF with invisible (empty) text.
+   * The indexed catalog fonts under public/fonts/{index} are raw TTFs whose
+   * first 32 bytes are XOR-obfuscated with this fixed 16-byte key (the same
+   * wire format the editor's own font loader decodes).
+   */
+  private static readonly CATALOG_FONT_XOR_KEY = [
+    160, 102, 214, 32, 20, 150, 71, 250, 149, 105, 184, 80, 176, 65, 73, 72,
+  ];
+
+  /**
+   * PDF-export font manifest: catalog file index -> alias file names x2t
+   * matches against inside m_sFontDir. One decoded byte set is written once
+   * per alias. Indexes come from __fonts_infos in public/sdkjs/common/
+   * AllFonts.js (file position, then __fonts_files lookup). Keep Arial and
+   * other western families on their own files -- aliasing them to the CJK
+   * fallback garbles latin text and digits. The CJK alias entries carry the
+   * literal zh font names documents reference; they are data, not UI copy.
+   */
+  private static readonly PDF_FONT_MANIFEST: ReadonlyArray<{ file: string; aliases: string[] }> = [
+    { file: '072', aliases: ['Arial.ttf'] },
+    { file: '074', aliases: ['Arial_Bold.ttf'] },
+    { file: '076', aliases: ['Arial_Italic.ttf'] },
+    { file: '075', aliases: ['Arial_Bold_Italic.ttf'] },
+    // Calibri regular is present; Carlito (metric-compatible) fills the
+    // missing bold/italic faces under both names.
+    { file: '049', aliases: ['Calibri.ttf'] },
+    { file: '109', aliases: ['Calibri_Bold.ttf', 'Carlito_Bold.ttf'] },
+    { file: '111', aliases: ['Calibri_Italic.ttf', 'Carlito_Italic.ttf'] },
+    { file: '110', aliases: ['Calibri_Bold_Italic.ttf', 'Carlito_Bold_Italic.ttf'] },
+    { file: '018', aliases: ['Times_New_Roman.ttf', 'Times New Roman.ttf'] },
+    { file: '088', aliases: ['Times_New_Roman_Bold.ttf'] },
+    { file: '090', aliases: ['Times_New_Roman_Italic.ttf'] },
+    { file: '089', aliases: ['Times_New_Roman_Bold_Italic.ttf'] },
+    { file: '079', aliases: ['Courier_New.ttf', 'Courier New.ttf'] },
+    // Names the previous implementation fetched directly (kept for the same
+    // default-latin coverage).
+    { file: '117', aliases: ['DejaVuSans.ttf'] },
+    { file: '050', aliases: ['DejaVuSans-Bold.ttf'] },
+    { file: '062', aliases: ['LiberationSans-Regular.ttf'] },
+    // CJK: SimSun (017) and Microsoft YaHei (016) exist as real files in
+    // this vendor; PingFang maps to YaHei as the closest match.
+    // 017 aliases include SimSun's zh display name, 016 includes YaHei's.
+    { file: '017', aliases: ['SimSun.ttf', 'NSimSun.ttf', '宋体.ttf'] },
+    { file: '016', aliases: ['Microsoft YaHei.ttf', '微软雅黑.ttf', 'PingFang SC.ttf'] },
+    { file: '130', aliases: ['DroidSansFallback.ttf', 'Droid Sans Fallback.ttf'] },
+  ];
+
+  /** Undo the catalog XOR obfuscation, returning a plain TTF byte copy. */
+  private decodeCatalogFont(bytes: Uint8Array): Uint8Array {
+    const out = new Uint8Array(bytes);
+    const key = X2TConverter.CATALOG_FONT_XOR_KEY;
+    const n = Math.min(32, out.length);
+    for (let i = 0; i < n; i++) {
+      out[i] ^= key[i % key.length];
+    }
+    return out;
+  }
+
+  /**
+   * Load fonts into WASM FS for PDF rendering. Called once per session.
+   * Without fonts, x2t generates a PDF with invisible (empty) text. Fonts
+   * are fetched from the indexed catalog (public/fonts/{index}) -- the same
+   * files the editor loads, so they are usually already HTTP-cached -- and
+   * XOR-decoded before being written under their alias names.
    */
   private async loadFontsForPdf(): Promise<void> {
     if (this.fontsLoaded || !this.x2tModule) return;
-    const fontNames = ['DejaVuSans.ttf', 'DejaVuSans-Bold.ttf', 'LiberationSans-Regular.ttf'];
     await Promise.all(
-      fontNames.map(async (name) => {
+      X2TConverter.PDF_FONT_MANIFEST.map(async ({ file, aliases }) => {
         try {
-          const res = await fetch(`${BASE_PATH}fonts/${name}`);
+          const res = await fetch(`${BASE_PATH}fonts/${file}`);
           if (!res.ok) return;
-          const buf = new Uint8Array(await res.arrayBuffer());
-          this.x2tModule!.FS.writeFile(`/working/fonts/${name}`, buf);
+          const bytes = this.decodeCatalogFont(new Uint8Array(await res.arrayBuffer()));
+          for (const alias of aliases) {
+            this.x2tModule!.FS.writeFile(`/working/fonts/${alias}`, bytes);
+          }
         } catch {
           // Non-fatal — PDF may still render with remaining fonts
         }
@@ -263,6 +442,7 @@ export class X2TConverter {
         88: 'The file may be in an unsupported format (.doc binary format), password-protected, or corrupted. Try converting to .docx first.',
         55: 'DRM-protected or encrypted file cannot be opened.',
         1: 'Invalid or corrupted file.',
+        80: 'x2t could not recognize the input format. An unsigned editor render stream needs an explicit m_nFormatFrom (see hasEditorBinSignature).',
       };
       const hint = hints[result] ? ` (${hints[result]})` : '';
       throw new Error(`Conversion failed with code: ${result}${hint}`);
@@ -272,15 +452,50 @@ export class X2TConverter {
   /**
    * Create conversion parameters XML
    */
-  private createConversionParams(fromPath: string, toPath: string, additionalParams = ''): string {
+  private createConversionParams(fromPath: string, toPath: string, additionalParams = '', noBase64 = false): string {
     return `<?xml version="1.0" encoding="utf-8"?>
 <TaskQueueDataConvert xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <m_sFileFrom>${fromPath}</m_sFileFrom>
   <m_sThemeDir>/working/themes</m_sThemeDir>
   <m_sFileTo>${toPath}</m_sFileTo>
-  <m_bIsNoBase64>false</m_bIsNoBase64>
+  <m_bIsNoBase64>${noBase64}</m_bIsNoBase64>
   ${additionalParams}
 </TaskQueueDataConvert>`;
+  }
+
+  /**
+   * Write media files into x2t's virtual FS before a bin -> document conversion.
+   *
+   * The bin format (the editor's serialized internal state) references inserted
+   * images by relative path (e.g. "media/image1.png") rather than embedding their
+   * bytes inline. On the open/forward direction, x2t itself populates
+   * /working/media/ as a side effect of unzipping the source docx/xlsx/pptx, and
+   * readMediaFiles() above reads that back out. But an image inserted into an
+   * already-open document (paste, or "Insert > Image > From File" -- both go
+   * through the SDK's writeFile event, see handleWriteFile in
+   * lib/onlyoffice-editor.ts) only ever exists as an in-memory blob: URL on our
+   * side; x2t's WASM sandbox has no access to the browser's Blob URL store, so
+   * without this step the bin -> document conversion has no way to find those
+   * bytes and the image comes out blank in the saved file (GitHub #72). Fetching
+   * each URL and writing it into /working/media/ here gives x2t the same files it
+   * would have found had they been present in the original document.
+   */
+  private async writeMediaFiles(media?: Record<string, string>): Promise<void> {
+    if (!this.x2tModule || !media) return;
+
+    await Promise.all(
+      Object.entries(media).map(async ([key, url]) => {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) return;
+          const bytes = new Uint8Array(await response.arrayBuffer());
+          const relativePath = key.startsWith('media/') ? key : `media/${key}`;
+          this.x2tModule!.FS.writeFile(`/working/${relativePath}`, bytes);
+        } catch (error) {
+          console.warn(`Failed to write media file ${key}:`, error);
+        }
+      }),
+    );
   }
 
   /**
@@ -354,26 +569,38 @@ export class X2TConverter {
   }
 
   /**
+   * Decode CSV bytes with encoding sniffing. A non-fatal utf-8 TextDecoder
+   * never throws (invalid sequences become U+FFFD), so strict decoding is the
+   * only way to detect legacy encodings at all. Excel on zh-CN Windows still
+   * exports CSV in the ANSI code page (GBK), which is why gb18030 (its
+   * superset) is tried before the latin1 last resort.
+   */
+  private decodeCsvBytes(csvData: Uint8Array): string {
+    if (csvData.length >= 3 && csvData[0] === 0xef && csvData[1] === 0xbb && csvData[2] === 0xbf) {
+      return new TextDecoder('utf-8').decode(csvData.slice(3));
+    }
+    try {
+      return new TextDecoder('utf-8', { fatal: true }).decode(csvData);
+    } catch {
+      try {
+        return new TextDecoder('gb18030', { fatal: true }).decode(csvData);
+      } catch {
+        // gb18030 decoder unavailable, or bytes invalid in it too
+        return new TextDecoder('latin1').decode(csvData);
+      }
+    }
+  }
+
+  /**
    * Convert CSV to XLSX format using SheetJS library
    * This is a workaround since x2t may not support CSV directly
    */
-  private async convertCsvToXlsx(csvData: Uint8Array, fileName: string): Promise<File> {
+  async convertCsvToXlsx(csvData: Uint8Array, fileName: string): Promise<File> {
     try {
       // Load xlsx library
       const XLSX = await this.loadXlsxLibrary();
 
-      // Remove UTF-8 BOM if present
-      let csvText: string;
-      if (csvData.length >= 3 && csvData[0] === 0xef && csvData[1] === 0xbb && csvData[2] === 0xbf) {
-        csvText = new TextDecoder('utf-8').decode(csvData.slice(3));
-      } else {
-        // Try UTF-8 first, fallback to other encodings if needed
-        try {
-          csvText = new TextDecoder('utf-8').decode(csvData);
-        } catch {
-          csvText = new TextDecoder('latin1').decode(csvData);
-        }
-      }
+      const csvText = this.decodeCsvBytes(csvData);
 
       // Parse CSV using SheetJS
       const workbook = XLSX.read(csvText, { type: 'string', raw: false });
@@ -390,6 +617,33 @@ export class X2TConverter {
       throw new Error(
         `Failed to convert CSV to XLSX: ${error instanceof Error ? error.message : 'Unknown error'}. ` +
           'Please convert your CSV file to XLSX format manually and try again.',
+      );
+    }
+  }
+
+  /**
+   * Convert an HTML-table document that masquerades as a spreadsheet
+   * (.xls/.xlsx exports from web systems) into a real XLSX via SheetJS,
+   * which parses <table> markup natively. Same encoding sniffing as CSV:
+   * these exports are frequently GBK.
+   */
+  async convertHtmlTableToXlsx(htmlData: Uint8Array, fileName: string): Promise<File> {
+    try {
+      const XLSX = await this.loadXlsxLibrary();
+      const html = this.decodeCsvBytes(htmlData);
+      const workbook = XLSX.read(html, { type: 'string', raw: false });
+      if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+        throw new Error('no table found');
+      }
+      const xlsxBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+      const xlsxFileName = fileName.replace(/\.[^.]+$/, '') + '.xlsx';
+      return new File([xlsxBuffer], xlsxFileName, {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+    } catch (error) {
+      throw new Error(
+        `Failed to convert HTML table to XLSX: ${error instanceof Error ? error.message : 'Unknown error'}. ` +
+          'The file is an HTML page saved with a spreadsheet extension; open it in a spreadsheet application and save it as XLSX.',
       );
     }
   }
@@ -578,6 +832,7 @@ export class X2TConverter {
     bin: Uint8Array,
     originalFileName: string,
     targetExt = 'DOCX',
+    media?: Record<string, string>,
   ): Promise<BinConversionResult> {
     await this.initialize();
 
@@ -586,6 +841,16 @@ export class X2TConverter {
     const outputFileName = `${sanitizedBase}.${targetExt.toLowerCase()}`;
 
     try {
+      await this.writeMediaFiles(media);
+
+      // The v9 engine's offline save hands us a finished OOXML zip rather than
+      // an editor bin. Same-format saves need no conversion at all; cross-format
+      // ones go through x2t as a real document, with the source extension spelled
+      // out so x2t can infer the conversion direction.
+      if (isZipContainer(bin)) {
+        return await this.convertZipDocument(bin, originalFileName, targetExt);
+      }
+
       // Handle CSV files specially - need to convert bin -> XLSX -> CSV
       if (targetExt.toUpperCase() === 'CSV') {
         // First convert bin to XLSX
@@ -601,27 +866,9 @@ export class X2TConverter {
         const xlsxResult = this.x2tModule!.FS.readFile(`/working/${xlsxFileName}`);
         const xlsxArray = xlsxResult instanceof Uint8Array ? xlsxResult : new Uint8Array(xlsxResult as ArrayBuffer);
 
-        // Convert XLSX to CSV using SheetJS
-        const XLSX = await this.loadXlsxLibrary();
-        const workbook = XLSX.read(xlsxArray, { type: 'array' });
-
-        // Get the first sheet
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-
-        // Convert to CSV
-        const csvText = XLSX.utils.sheet_to_csv(worksheet);
-
-        // Convert CSV text to Uint8Array (UTF-8 with BOM for better compatibility)
-        const csvBOM = new Uint8Array([0xef, 0xbb, 0xbf]);
-        const csvTextBytes = new TextEncoder().encode(csvText);
-        const csvArray = new Uint8Array(csvBOM.length + csvTextBytes.length);
-        csvArray.set(csvBOM, 0);
-        csvArray.set(csvTextBytes, csvBOM.length);
-
         return {
           fileName: outputFileName,
-          data: csvArray,
+          data: await this.xlsxToCsvBytes(xlsxArray),
         };
       }
 
@@ -633,13 +880,25 @@ export class X2TConverter {
       let additionalParams = '';
       if (targetExt === 'PDF') {
         await this.loadFontsForPdf();
-        additionalParams = '<m_sFontDir>/working/fonts/</m_sFontDir>';
+        additionalParams = `<m_sFontDir>/working/fonts/</m_sFontDir><m_nFormatTo>${PDF_OUTPUT_FORMAT}</m_nFormatTo>`;
+      }
+
+      // A bin without a DOCY/XLSY/PPTY/VSDY signature is the editor's canvas
+      // render stream ("Print to PDF" and similar), which x2t cannot identify
+      // from the bytes alone -- it fails with exit code 80 unless the input
+      // format is declared explicitly. The stream is also raw binary (unlike
+      // signed editor bins, which are base64-wrapped text), so m_bIsNoBase64
+      // must be true for it. Signed editor bins are left untouched.
+      const isCanvasRenderStream = !hasEditorBinSignature(bin);
+      if (isCanvasRenderStream) {
+        additionalParams += `<m_nFormatFrom>${CANVAS_PDF_INPUT_FORMAT}</m_nFormatFrom>`;
       }
 
       const params = this.createConversionParams(
         `/working/${binFileName}`,
         `/working/${outputFileName}`,
         additionalParams,
+        isCanvasRenderStream,
       );
 
       this.x2tModule!.FS.writeFile('/working/params.xml', params);
@@ -660,145 +919,80 @@ export class X2TConverter {
   }
 
   /**
+   * Convert XLSX bytes to CSV bytes (UTF-8 with BOM) via SheetJS.
+   */
+  async xlsxToCsvBytes(xlsxArray: Uint8Array): Promise<Uint8Array<ArrayBuffer>> {
+    const XLSX = await this.loadXlsxLibrary();
+    const workbook = XLSX.read(xlsxArray, { type: 'array' });
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+    const csvText = XLSX.utils.sheet_to_csv(worksheet);
+    const csvBOM = new Uint8Array([0xef, 0xbb, 0xbf]);
+    const csvTextBytes = new TextEncoder().encode(csvText);
+    const csvArray = new Uint8Array(csvBOM.length + csvTextBytes.length);
+    csvArray.set(csvBOM, 0);
+    csvArray.set(csvTextBytes, csvBOM.length);
+    return csvArray;
+  }
+
+  /**
+   * Convert a finished OOXML document (v9 offline save output) to the target
+   * format. The editor already produced a complete docx/xlsx/pptx zip, so a
+   * same-format save returns the bytes as-is, CSV goes straight to SheetJS,
+   * and everything else is a plain document-to-document x2t conversion.
+   */
+  private async convertZipDocument(
+    bin: Uint8Array,
+    originalFileName: string,
+    targetExt: string,
+  ): Promise<BinConversionResult> {
+    const sanitizedBase = this.sanitizeFileName(originalFileName).replace(/\.[^/.]+$/, '');
+    const nameExt = (originalFileName.split('.').pop() || targetExt).toLowerCase();
+    // The editor opens CSV files as spreadsheets internally, so the zip it
+    // emits for them is an XLSX regardless of the original file's name.
+    const sourceExt = nameExt === 'csv' ? 'xlsx' : nameExt;
+    const outputFileName = `${sanitizedBase}.${targetExt.toLowerCase()}`;
+
+    if (sourceExt === targetExt.toLowerCase()) {
+      return { fileName: outputFileName, data: bin as BlobPart };
+    }
+
+    if (targetExt.toUpperCase() === 'CSV') {
+      return { fileName: outputFileName, data: await this.xlsxToCsvBytes(bin) };
+    }
+
+    const inputPath = `/working/${sanitizedBase}.${sourceExt}`;
+    const outputPath = `/working/${outputFileName}`;
+    this.x2tModule!.FS.writeFile(inputPath, bin);
+
+    let additionalParams = '';
+    if (targetExt === 'PDF') {
+      await this.loadFontsForPdf();
+      additionalParams = `<m_sFontDir>/working/fonts/</m_sFontDir><m_nFormatTo>${PDF_OUTPUT_FORMAT}</m_nFormatTo>`;
+    }
+
+    const params = this.createConversionParams(inputPath, outputPath, additionalParams, true);
+    this.x2tModule!.FS.writeFile('/working/params.xml', params);
+    this.executeConversion('/working/params.xml');
+
+    return { fileName: outputFileName, data: this.x2tModule!.FS.readFile(outputPath) };
+  }
+
+  /**
    * Convert bin format to specified format and save it locally.
    */
   async convertBinToDocumentAndDownload(
     bin: Uint8Array,
     originalFileName: string,
     targetExt = 'DOCX',
+    media?: Record<string, string>,
   ): Promise<BinConversionResult> {
-    const result = await this.convertBinToDocument(bin, originalFileName, targetExt);
+    const result = await this.convertBinToDocument(bin, originalFileName, targetExt, media);
     const data = result.data instanceof Uint8Array ? result.data : new Uint8Array(result.data as ArrayBuffer);
 
     // TODO: Improve print functionality
-    await this.saveWithFileSystemAPI(data, result.fileName);
+    await saveFileToDisk(data, result.fileName);
     return result;
-  }
-
-  /**
-   * Download file
-   */
-  private async downloadFile(data: Uint8Array, fileName: string): Promise<void> {
-    const blob = new Blob([data as BlobPart]);
-    const url = await createObjectURL(blob);
-    const link = document.createElement('a');
-
-    link.href = url;
-    link.download = fileName;
-    link.style.display = 'none';
-
-    document.body.appendChild(link);
-    link.click();
-
-    // Clean up resources
-    setTimeout(() => {
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    }, 100);
-  }
-
-  /**
-   * Get MIME type from file extension
-   */
-  private getMimeTypeFromExtension(extension: string): string {
-    const mimeMap: Record<string, string> = {
-      // Document types
-      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      doc: 'application/msword',
-      odt: 'application/vnd.oasis.opendocument.text',
-      rtf: 'application/rtf',
-      txt: 'text/plain',
-      pdf: 'application/pdf',
-
-      // Spreadsheet types
-      xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      xls: 'application/vnd.ms-excel',
-      ods: 'application/vnd.oasis.opendocument.spreadsheet',
-      csv: 'text/csv',
-
-      // Presentation types
-      pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      ppt: 'application/vnd.ms-powerpoint',
-      odp: 'application/vnd.oasis.opendocument.presentation',
-
-      // Image types
-      png: 'image/png',
-      jpg: 'image/jpeg',
-      jpeg: 'image/jpeg',
-      gif: 'image/gif',
-      bmp: 'image/bmp',
-      webp: 'image/webp',
-      svg: 'image/svg+xml',
-    };
-
-    return mimeMap[extension.toLowerCase()] || 'application/octet-stream';
-  }
-
-  /**
-   * Get file type description
-   */
-  private getFileDescription(extension: string): string {
-    const descriptionMap: Record<string, string> = {
-      docx: 'Word Document',
-      doc: 'Word 97-2003 Document',
-      odt: 'OpenDocument Text',
-      pdf: 'PDF Document',
-      xlsx: 'Excel Workbook',
-      xls: 'Excel 97-2003 Workbook',
-      ods: 'OpenDocument Spreadsheet',
-      pptx: 'PowerPoint Presentation',
-      ppt: 'PowerPoint 97-2003 Presentation',
-      odp: 'OpenDocument Presentation',
-      txt: 'Text Document',
-      rtf: 'Rich Text Format',
-      csv: 'CSV File',
-    };
-
-    return descriptionMap[extension.toLowerCase()] || 'Document';
-  }
-
-  /**
-   * Save file using modern File System API
-   */
-  private async saveWithFileSystemAPI(data: Uint8Array, fileName: string, mimeType?: string): Promise<void> {
-    if (!(window as any).showSaveFilePicker) {
-      await this.downloadFile(data, fileName);
-      return;
-    }
-    try {
-      // Get file extension and determine MIME type
-      const extension = fileName.split('.').pop()?.toLowerCase() || '';
-      const detectedMimeType = mimeType || this.getMimeTypeFromExtension(extension);
-
-      // Show file save dialog
-      const fileHandle = await (window as any).showSaveFilePicker({
-        suggestedName: fileName,
-        types: [
-          {
-            description: this.getFileDescription(extension),
-            accept: {
-              [detectedMimeType]: [`.${extension}`],
-            },
-          },
-        ],
-      });
-
-      // Create writable stream and write data
-      const writable = await fileHandle.createWritable();
-      await writable.write(data);
-      await writable.close();
-      // ranui/message registers a global `window.message` toast API (untyped).
-      (window as unknown as { message?: { success?: (msg: string) => void } }).message?.success?.(
-        `${t('fileSavedSuccess')}${fileName}`,
-      );
-      console.log('File saved successfully:', fileName);
-    } catch (error) {
-      if ((error as Error).name === 'AbortError') {
-        console.log('User cancelled the save operation');
-        return;
-      }
-      throw error;
-    }
   }
 
   /**

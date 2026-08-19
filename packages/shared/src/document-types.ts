@@ -25,7 +25,7 @@ export interface BinConversionResult {
   data: BlobPart;
 }
 
-export type DocumentType = 'word' | 'cell' | 'slide';
+export type DocumentType = 'word' | 'cell' | 'slide' | 'pdf';
 
 export interface SaveEvent {
   data: {
@@ -52,7 +52,25 @@ declare global {
           urls?: Record<string, string>;
           path?: string;
           imgName?: string;
-          buf?: ArrayBuffer;
+          buf?: ArrayBuffer | string;
+          success?: boolean;
+          error?: string;
+          enabled?: boolean;
+          message?: string;
+        };
+      }) => void;
+      /** v9 renamed sendCommand -> serviceCommand */
+      serviceCommand?: ({
+        command,
+        data,
+      }: {
+        command: string;
+        data: {
+          err_code?: number;
+          urls?: Record<string, string>;
+          path?: string;
+          imgName?: string;
+          buf?: ArrayBuffer | string;
           success?: boolean;
           error?: string;
           enabled?: boolean;

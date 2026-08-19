@@ -46,8 +46,8 @@ test.describe('zh-TW editor bundles', () => {
     const en = await extractEditorText(page);
     console.log('en docx:', JSON.stringify(en.slice(0, 200)));
 
-    expect(/檔案/.test(tw) && /審閱/.test(tw)).toBe(true);
-    expect(/文件/.test(cn) && /审阅/.test(cn)).toBe(true);
+    expect(/檔案/.test(tw) && /共同編輯/.test(tw)).toBe(true);
+    expect(/文件/.test(cn) && /协作/.test(cn)).toBe(true);
     expect(/File|Insert|Home/.test(en)).toBe(true);
   });
 

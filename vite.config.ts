@@ -7,12 +7,12 @@ const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = path.dirname(__filename);
 
-// Resolve clean URLs to the static .html files under public/ so the landing
+// Resolve clean URLs to the static .html files under publicDir so the landing
 // pages (e.g. /offline-document-editor, /zh-CN/open/docx) work in `pnpm dev`
 // and `vite preview` exactly like on Cloudflare Pages in production, where
 // extensionless URLs auto-resolve and /dir 308-redirects to /dir/. Without
 // this the nav links 404 / no-op locally.
-const cleanUrls = (): Plugin => {
+const cleanUrls = (publicDirName: string): Plugin => {
   const middlewareFor = (root: string) => {
     return (
       req: import('node:http').IncomingMessage,
@@ -35,33 +35,40 @@ const cleanUrls = (): Plugin => {
   return {
     name: 'clean-urls',
     configureServer(server) {
-      server.middlewares.use(middlewareFor(path.join(__dirname, 'public')));
+      server.middlewares.use(middlewareFor(path.join(__dirname, publicDirName)));
     },
     configurePreviewServer(server) {
-      server.middlewares.use(middlewareFor(path.join(__dirname, 'dist')));
+      server.middlewares.use(middlewareFor(path.join(__dirname, path.basename(server.config.build.outDir))));
     },
   };
 };
 
-export default defineConfig({
-  base: './',
-  publicDir: 'public',
-  plugins: [cleanUrls()],
-  resolve: {
-    alias: {
-      '@/lib': resolve(__dirname, 'lib'),
-      '@/store': resolve(__dirname, 'store'),
-      '@/assets': resolve(__dirname, 'assets'),
-      '@/types': resolve(__dirname, 'types'),
-      '@/styles': resolve(__dirname, 'styles'),
+export default defineConfig(() => {
+  const publicDirName = 'public';
+
+  return {
+    base: './',
+    publicDir: publicDirName,
+    build: {
+      outDir: 'dist',
     },
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import "@/styles/base.css";`,
+    plugins: [cleanUrls(publicDirName)],
+    resolve: {
+      alias: {
+        '@/lib': resolve(__dirname, 'lib'),
+        '@/store': resolve(__dirname, 'store'),
+        '@/assets': resolve(__dirname, 'assets'),
+        '@/types': resolve(__dirname, 'types'),
+        '@/styles': resolve(__dirname, 'styles'),
+      },
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@import "@/styles/base.css";`,
+        },
       },
     },
-  },
+  };
 });

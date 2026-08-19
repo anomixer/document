@@ -26,7 +26,7 @@ A privacy-first, browser-based document editor powered by OnlyOffice. Edit DOCX,
 ## ✨ Features
 
 - 🔒 **Privacy-first** — all processing happens locally, nothing is uploaded
-- 📝 **Multi-format** — DOCX, XLSX, PPTX, CSV and more
+- 📝 **Multi-format** — DOCX, XLSX, PPTX, CSV editing plus PDF opening, and more
 - 🚀 **No server required** — pure frontend, deploy anywhere
 - 🌐 **Open from URL** — load documents via `?src=` or `?file=` parameters
 - 📦 **PWA support** — install and use offline
@@ -220,9 +220,9 @@ docker build -t ghcr.io/anomixer/document:latest .
 
 ## 🔤 Fonts
 
-This project does not include proprietary fonts (Arial, Times New Roman, etc.) to comply with open-source licensing. Font name references are preserved for document compatibility.
+The editor ships with the font library bundled in the vendored OnlyOffice build (`public/fonts/`, indexed by `public/sdkjs/common/AllFonts.js`). Fonts are fetched on demand — only the ones a document actually uses are downloaded.
 
-→ **[Font management guide](docs/fonts.md)** — how to add fonts by index.
+→ **[Font management guide](docs/fonts.md)** — the indexed font catalog: wire format, registries, and how to add fonts with `bin/font-catalog.mjs`.
 
 ---
 

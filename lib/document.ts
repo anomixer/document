@@ -1,7 +1,7 @@
 import { createObjectURL } from 'ranuts/utils';
 import { View } from 'ranui/builder';
 import { getDocmentObj, setDocmentObj } from '@ranuts/shared/store';
-import { handleDocumentOperation, initX2T, loadEditorApi, loadScript } from './converter';
+import { handleDocumentOperation, loadEditorApi } from './converter';
 import { showLoading } from './loading';
 
 // Import UI functions with type-only to avoid circular dependency
@@ -23,7 +23,7 @@ export function setUICallbacks(callbacks: {
 // Create a single hidden file input (ranui builder, ecosystem convention)
 const fileInput = View('input')
   .attr('type', 'file')
-  .attr('accept', '.docx,.xlsx,.pptx,.doc,.xls,.ppt,.csv')
+  .attr('accept', '.docx,.xlsx,.pptx,.doc,.xls,.ppt,.csv,.pdf')
   .attr('style', 'visibility: hidden')
   .build() as HTMLInputElement;
 document.body.appendChild(fileInput);
@@ -40,9 +40,7 @@ export const onCreateNew = async (ext: string): Promise<void> => {
       fileName: 'New_Document' + ext,
       file: undefined,
     });
-    await loadScript();
     await loadEditorApi();
-    await initX2T();
     const { fileName, file: fileBlob } = getDocmentObj();
     await handleDocumentOperation({ file: fileBlob, fileName, isNew: !fileBlob });
     // Show menu guide after document is loaded
@@ -74,7 +72,6 @@ export const openLocalFile = async (file: File): Promise<void> => {
       file: file,
       url: await createObjectURL(file),
     });
-    await initX2T();
     const { fileName, file: fileBlob } = getDocmentObj();
     await handleDocumentOperation({ file: fileBlob, fileName, isNew: !fileBlob });
     // Show menu guide after document is loaded
@@ -159,10 +156,13 @@ export const openDocumentFromUrl = async (
         }
       }
 
-      // If still no filename, extract from URL
+      // If still no filename, extract from URL. Resolve against the current
+      // page so relative URLs (?file=/docs/report.xlsx) keep their real file
+      // name instead of falling back to the extensionless "document", which
+      // then fails the editor's fileType validation.
       if (!finalFileName) {
         try {
-          const urlObj = new URL(url);
+          const urlObj = new URL(url, window.location.href);
           const pathname = urlObj.pathname;
           finalFileName = pathname.split('/').pop() || 'document';
           // Remove query parameters if any
@@ -185,7 +185,6 @@ export const openDocumentFromUrl = async (
     });
 
     // Initialize and open document
-    await initX2T();
     const { fileName: docFileName, file: fileBlob } = getDocmentObj();
     await handleDocumentOperation({
       file: fileBlob,
