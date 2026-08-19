@@ -21,12 +21,12 @@
 
 x2t 轉 PDF 時只讀三樣:`font_selection.bin`(字型選取索引)與三個內建拉丁字型(DejaVuSans / DejaVuSans-Bold / LiberationSans-Regular)。它**照內建字表渲染**,並按別名檔名在 `m_sFontDir` 找字型;它**內建沒有任何 CJK 字型**。
 
-| 組合 | PDF 渲染結果 |
-|---|---|
-| v7 x2t + 只放拉丁字型(當前 code) | **中文全缺** |
-| v7 x2t + 開源 Noto 化名成 SimSun | **中文變亂碼字**(囂蟠讔静) |
-| v7 x2t + **真微軟 SimSun / 微軟雅黑**(從 v9 catalog `public/fonts/016,017` 解出) | **仍是亂碼字** |
-| v7 x2t + **v9 分支的 x2t binary** + v9 完整配方(真字型 + `PDF_FONT_MANIFEST` + `m_nFormatTo=513`) | **仍是亂碼字** |
+| 組合                                                                                              | PDF 渲染結果               |
+| ------------------------------------------------------------------------------------------------- | -------------------------- |
+| v7 x2t + 只放拉丁字型(當前 code)                                                                  | **中文全缺**               |
+| v7 x2t + 開源 Noto 化名成 SimSun                                                                  | **中文變亂碼字**(囂蟠讔静) |
+| v7 x2t + **真微軟 SimSun / 微軟雅黑**(從 v9 catalog `public/fonts/016,017` 解出)                  | **仍是亂碼字**             |
+| v7 x2t + **v9 分支的 x2t binary** + v9 完整配方(真字型 + `PDF_FONT_MANIFEST` + `m_nFormatTo=513`) | **仍是亂碼字**             |
 
 ## 結論
 
