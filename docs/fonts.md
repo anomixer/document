@@ -41,11 +41,13 @@ and it renders text against x2t's **own built-in font tables**.
   open-source Noto → CJK missing; Noto renamed to "SimSun" → wrong glyphs; even the real
   Microsoft SimSun / Microsoft YaHei → still wrong. This is an x2t-engine limitation, not a code
   bug.
-- The v9 branch (commit `1838cf298`) ships a real-SimSun/YaHei catalog + a `PDF_FONT_MANIFEST` +
-  `font-catalog.mjs` (XOR wire format) + `m_nFormatTo=513` to address this, but its test only
-  asserts the fonts are *written* to the WASM FS — it never renders the PDF to confirm CJK appears.
-  So **upgrading to v9 is not yet a verified fix** for PDF-CJK.
+- The v9 branch (commit `1838cf298`) ships a different x2t binary (9.86 MB) + a 267-font
+  catalog (real SimSun / Microsoft YaHei / Droid Sans Fallback) + a `PDF_FONT_MANIFEST` +
+  `m_nFormatTo=513`. **Verified (2026-08-19, built v9 and rendered the PDF): this produces
+  correct CJK PDFs** (Traditional + Simplified, SimSun/YaHei/SimHei/Kai all render; PDF embeds
+  real CJK subsets `BAAAAA+SimSun`, `FAAAAA+SimHei`, … with no base-14 fallback). The v7 x2t
+  binary cannot do this — it is not fixable by backporting fonts or the manifest onto v7; the
+  whole v9 set (binary + catalog + manifest) is required.
 
 See [2026-08-19-pdf-cjk-export-limitation.md](explorations/2026-08-19-pdf-cjk-export-limitation.md)
-for the full investigation, the v7/v9 binary difference, and the follow-up plan (b1: build and
-render v9 to confirm whether it actually produces CJK PDFs).
+for the full investigation, the b1 verification, and the v7→v9 decision.

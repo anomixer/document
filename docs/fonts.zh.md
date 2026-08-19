@@ -33,6 +33,6 @@ Arial 其他变体：
 
 - x2t 内建表只有西文/拉丁字体（`DejaVuSans`、`LiberationSans`），**没有任何 CJK 字体**，而且它只查 `font_selection.bin` 索引加那三个拉丁字体。
 - 结果：**PDF 输出里的中/日/韩文字不显示**（缺字或乱码），即使 `public/fonts/` 里有 CJK 字体（如 `NotoSans*`）。已实测：开源 Noto → 中文全缺；Noto 化名成 "SimSun" → 乱码字；连真正的微软 SimSun / 微软雅黑 → 仍乱码。这是 x2t 引擎限制，不是 code bug。
-- v9 分支（commit `1838cf298`）用真 SimSun(017)/微软雅黑(016)/Droid(130) catalog + `PDF_FONT_MANIFEST` 别名清单 + `font-catalog.mjs`（XOR 线格式）+ `m_nFormatTo=513` 来处理，但**其测试只断言字体被写进 WASM FS，从没有真的渲染 PDF 确认中文出现**。所以**升 v9 尚未被验证能修好 PDF-CJK**。
+- v9 分支（commit `1838cf298`）用**不同的 x2t binary**（9.86 MB）+ 267 字型 catalog（真 SimSun/微软雅黑/Droid Sans Fallback）+ `PDF_FONT_MANIFEST` + `m_nFormatTo=513`。**已實測驗證（2026-08-19，build v9 並渲染 PDF）：能產出正確 CJK PDF**——繁體+簡體、SimSun/雅黑/黑體/楷體皆正確，PDF 內嵌真實 CJK 子集（`BAAAAA+SimSun`、`FAAAAA+SimHei`…）且無 base-14 回退。v7 的舊 binary 做不到，**不能靠把字型/清單 backport 回 v7 解決**——必須整套 v9（binary + catalog + manifest）齊全。
 
-详见 [2026-08-19-pdf-cjk-export-limitation.md](explorations/2026-08-19-pdf-cjk-export-limitation.md)（完整调查、v7/v9 binary 差异、后续计划 b1：build 并渲染 v9 确认它到底能不能产出 CJK PDF）。
+详见 [2026-08-19-pdf-cjk-export-limitation.md](explorations/2026-08-19-pdf-cjk-export-limitation.md)（完整调查、b1 验证、v7→v9 决策）。
