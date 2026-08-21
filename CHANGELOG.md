@@ -12,7 +12,7 @@ notes. Entries describe what users experience, not internal refactors.
 - Editing complex real-world PPTX decks can raise "An error occurred during
   the work with the document" (under investigation; a full regression
   campaign against real-world documents is running and gates the next
-  release announcement). Note: the *locale-caption* cause of this message —
+  release announcement). Note: the _locale-caption_ cause of this message —
   which greyed out the whole editor on open under zh-TW — is now fixed (see
   Fixed above); the remaining cases are triggered while editing complex
   content, not on open.

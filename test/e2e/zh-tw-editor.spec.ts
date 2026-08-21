@@ -108,9 +108,7 @@ test.describe('zh-TW editor bundles', () => {
     // The editor must be usable: more buttons enabled than disabled.
     expect(probe.enabled).toBeGreaterThan(probe.disabled);
     // The specific undefined-caption crash must not have been thrown.
-    expect(
-      consoleErrors.some((e) => /Cannot read properties of undefined \(reading '0'\)/.test(e)),
-    ).toBe(false);
+    expect(consoleErrors.some((e) => /Cannot read properties of undefined \(reading '0'\)/.test(e))).toBe(false);
   });
 
   test('spreadsheeteditor zh-TW shows Traditional', async ({ page }) => {

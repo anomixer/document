@@ -207,7 +207,7 @@ filename slot (empty because there is no server-side document). **Only Excel** h
 not.
 
 **Root cause:** on open, the SSE app's header checks `asc_getLocalRestrictions()` and, when it is
-non-None, assumes a *peer* holds the file and does `new Common.UI.SynchronizeTip({...})`. In this
+non-None, assumes a _peer_ holds the file and does `new Common.UI.SynchronizeTip({...})`. In this
 serverless single-user editor there is no peer, so the tip is always a false positive that just
 lures the user into a pointless save. (Confirmed the app's own `asc_setRestriction` is only used for
 readonly mode and is `null` on a fresh editable workbook, so the trigger is the vendor's internal

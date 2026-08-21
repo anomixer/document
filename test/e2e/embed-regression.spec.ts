@@ -88,9 +88,7 @@ test.describe('embed regression (real editor)', () => {
     // Let the editor settle (the tip, if any, appears on open).
     await page.waitForTimeout(6000);
 
-    const editorFrame = page
-      .frames()
-      .find((f) => /spreadsheeteditor|documenteditor|presentationeditor/.test(f.url()));
+    const editorFrame = page.frames().find((f) => /spreadsheeteditor|documenteditor|presentationeditor/.test(f.url()));
     expect(editorFrame, 'editor iframe never mounted').toBeTruthy();
 
     const probe = await editorFrame!.evaluate(() => {
