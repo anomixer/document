@@ -194,40 +194,55 @@ if (documentUrl) {
   });
 }
 
-// Register Service Worker for PWA
+// Service Worker (web only). The Tauri desktop app is served from the embedded
+// local filesystem, so it is already fully offline; a Service Worker on the
+// tauri.localhost protocol adds nothing but a failure layer — it intermittently
+// fails to update and can intercept asset requests (web-apps, x2t.wasm), leaving
+// the editor unrendered: a black screen. So on desktop we don't register one and
+// clear any a previous build left in the webview's data dir. The web deployment
+// (pages.dev / GitHub Pages / localhost dev) keeps it for PWA + offline.
+const isDesktopApp = typeof window !== 'undefined' && ('__TAURI_INTERNALS__' in window || /tauri/i.test(location.host));
+
 if ('serviceWorker' in navigator) {
-  // Whether a SW was already controlling this page when it started. Each deploy
-  // rebuilds sw.js with a fresh CACHE_VERSION; the new SW skipWaiting()s and
-  // claims clients, firing `controllerchange`. If a SW was ALREADY in control at
-  // startup, that event means a *new build* took over — not the first install —
-  // so we can reload once to swap the stale assets for the fresh ones. Without
-  // this, the current page keeps rendering the previously-cached build until the
-  // user manually refreshes (the "refresh once more and it's fixed" symptom).
-  const hadController = !!navigator.serviceWorker.controller;
-  let reloadingForUpdate = false;
-
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    // Guard 1: only on a real update (not first install). Guard 2: reload once.
-    // Guard 3: never while a document is open — a reload would discard unsaved
-    // edits. On the landing page fileName is empty, so the reload is invisible.
-    if (!hadController || reloadingForUpdate) return;
-    if (getDocmentObj().fileName) return;
-    reloadingForUpdate = true;
-    window.location.reload();
-  });
-
-  window.addEventListener('load', () => {
+  if (isDesktopApp) {
     navigator.serviceWorker
-      .register('./sw.js')
-      .then((registration) => {
-        console.log('SW registered: ', registration);
-        // Check for updates on every page load
-        registration.update();
-      })
-      .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
-      });
-  });
+      .getRegistrations()
+      .then((regs) => regs.forEach((reg) => reg.unregister()))
+      .catch(() => {});
+  } else {
+    // Whether a SW was already controlling this page when it started. Each deploy
+    // rebuilds sw.js with a fresh CACHE_VERSION; the new SW skipWaiting()s and
+    // claims clients, firing `controllerchange`. If a SW was ALREADY in control at
+    // startup, that event means a *new build* took over — not the first install —
+    // so we can reload once to swap the stale assets for the fresh ones. Without
+    // this, the current page keeps rendering the previously-cached build until the
+    // user manually refreshes (the "refresh once more and it's fixed" symptom).
+    const hadController = !!navigator.serviceWorker.controller;
+    let reloadingForUpdate = false;
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      // Guard 1: only on a real update (not first install). Guard 2: reload once.
+      // Guard 3: never while a document is open — a reload would discard unsaved
+      // edits. On the landing page fileName is empty, so the reload is invisible.
+      if (!hadController || reloadingForUpdate) return;
+      if (getDocmentObj().fileName) return;
+      reloadingForUpdate = true;
+      window.location.reload();
+    });
+
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('./sw.js')
+        .then((registration) => {
+          console.log('SW registered: ', registration);
+          // Check for updates on every page load
+          registration.update();
+        })
+        .catch((registrationError) => {
+          console.log('SW registration failed: ', registrationError);
+        });
+    });
+  }
 }
 
 // Initialize PWA install component — built with the ranui builder (ecosystem

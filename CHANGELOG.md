@@ -38,6 +38,14 @@ notes. Entries describe what users experience, not internal refactors.
 
 ### Fixed
 
+- **Desktop app: no more black screen when opening a document.** The Tauri
+  desktop app intermittently showed a blank window and never opened the
+  editor, because the web Service Worker (meant for PWA offline caching) was
+  also running inside the desktop webview, where it intermittently failed to
+  update and could intercept the editor's own asset requests. The desktop app
+  is served from its embedded local files and is already fully offline, so it
+  no longer registers the Service Worker (and clears one a previous build left
+  behind). The web app keeps it for PWA / offline.
 - **zh-TW / any locale with a missing caption no longer crashes the whole
   editor.** Opening a document under Traditional Chinese could grey out the
   entire toolbar, blank the page, and pop "An error occurred during the work
