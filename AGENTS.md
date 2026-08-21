@@ -219,3 +219,61 @@ vendor later calls on the instance (`.on`, `.show`, `.destroy`, …). Earlier a 
 crashed with `s.tip.on is not a function` — the vendor calls methods on the returned object, so
 return a permissive Proxy, not a fixed-shape object. Verified the editor still edits and saves
 (`asc_Save` → download stream intact) after suppression, so it is not masking a real lock.
+
+## Desktop (Tauri) app: do NOT run a Service Worker in the webview
+
+**Symptom (reproduced 2026-08-21, `document-desktop.exe`):** the desktop app intermittently opened
+to a blank window and never mounted the editor (no toolbar) — some launches fine, some black. That
+intermittence is the tell.
+
+**Root cause:** `index.ts` registered the **web** Service Worker (`sw.js`, PWA offline cache)
+unconditionally. In the Tauri webview it runs on the `tauri.localhost` protocol, where it is
+flaky: `Failed to update a ServiceWorker … An unknown error occurred`, and once it controls the
+page it can intercept asset requests and serve the SPA shell instead of the real editor assets
+(`web-apps/…`, `x2t.wasm.gz`) — so `DocEditor` builds but the **editor iframe is never created**
+(`iframes: []`). Reproduced by attaching to the real exe over CDP
+(`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=…` + Playwright
+`connectOverCDP`).
+
+**Fix (`index.ts`):** the desktop app is served from its embedded local files and is already fully
+offline, so it does not need a SW. Detect desktop via
+`isDesktopApp = typeof window !== 'undefined' && ('__TAURI_INTERNALS__' in window ||
+/tauri/i.test(location.host))`; on desktop, `navigator.serviceWorker.getRegistrations().forEach
+(unregister)` instead of `register('./sw.js')`. `__TAURI_INTERNALS__` is Tauri's injected IPC
+bridge (absent on the web host), so the web path keeps its SW for PWA + offline. Regression:
+`test/e2e/desktop-sw-gate.spec.ts`.
+
+**Two Service Workers — don't conflate them:** `sw.js` is ours (PWA) and is the culprit; the OnlyOffice
+vendor editor `index.html` also registers `document_editor_service_worker.js` (a resource preloader) —
+that one is harmless and coexists with a working editor.
+
+**Also (local dev):** `tsconfig.json` excludes `src-tauri/**`. `tauri build` generates codegen `.ts`
+artifacts under `src-tauri/target`, and the `**/*.ts` include was pulling them into `tsc --noEmit`
+(spurious errors). `src-tauri` has no first-party TS, so excluding the dir is safe.
+
+## Desktop (Tauri) app: build & ship
+
+The native Windows app lives in `src-tauri/` (Tauri v2, `tauri-cli` via npx). It wraps the **same
+web app** in a WebView2 webview, so any web-side fix (like the two above) is automatically in the
+exe — but the web assets must be in a fresh `dist`.
+
+```bash
+pnpm build                          # fresh dist (bin/build.sh: vendor patches + vite + SW timestamp)
+cd src-tauri && npx @tauri-apps/cli build
+```
+
+- **`beforeBuildCommand` runs `vite build`** (not `pnpm build`), so the vendor patches from
+  `bin/patch-vendor-robustness.js` etc. are applied by that build step, not by a separate `pnpm build`
+  — keep the two in sync if you add a new patch step.
+- **Output:** `src-tauri/target/release/document-desktop.exe` (standalone) +
+  `bundle/nsis/document-desktop_<ver>_x64-setup.exe` (NSIS installer) + a `.msi`. The `<ver>` is
+  `tauri.conf.json` → `version` (currently `0.0.5`).
+- **Verification loop (no GUI):** launch the exe with
+  `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS="--remote-debugging-port=9410"` and drive it with Playwright
+  `chromium.connectOverCDP('http://127.0.0.1:9410')` — open a document, assert the editor iframe is
+  present with a populated toolbar, and read `navigator.serviceWorker.getRegistrations()`. This is how
+  the black-screen regression is caught. Kill stray `document-desktop.exe`/`msedgewebview2.exe`
+  between runs.
+- **Release:** the `v0.0.5` GitHub tag is repointed to the build commit; the old v7
+  `document-desktop.zip` was removed and the fixed `document-desktop.exe` + setup exe uploaded over
+  the existing v0.0.5 release. See `docs/explorations/2026-08-21-desktop-blackscreen-service-worker.md`.

@@ -29,6 +29,38 @@ pnpm run lint                    # lint:ts + lint:docker
 
 ---
 
+## 桌面 App（Tauri）
+
+原生 Windows 桌面 App 在 `src-tauri/`（Tauri v2，`tauri-cli` 走 npx），把**同一套 web app**
+包进 WebView2 webview。因此 web 端的修复（含下面两条）自动进 exe；但 web 资源要先有
+新鲜 `dist`。
+
+```bash
+pnpm build                          # 先出新鲜 dist（bin/build.sh：vendor patches + vite + SW timestamp）
+cd src-tauri && npx @tauri-apps/cli build
+```
+
+产物：`src-tauri/target/release/document-desktop.exe`（可执行）+
+`bundle/nsis/document-desktop_<ver>_x64-setup.exe`（NSIS 安装包）+ `.msi`。`<ver>` 来自
+`tauri.conf.json` 的 `version`（目前 `0.0.5`）。
+
+**两条关键 gotcha（细节见 [AGENTS.md](AGENTS.md) 与
+docs/explorations/2026-08-21-desktop-blackscreen-service-worker.md）：**
+
+1. **桌面 webview 里不要跑 Service Worker。** `index.ts` 用
+   `isDesktopApp`（`__TAURI_INTERNALS__` / `tauri` host）检测桌面环境，桌面时不注册
+   `sw.js` 并清掉旧版残留——否则 `sw.js` 在 `tauri.localhost` 上偶尔拦截资产、令编辑器
+   加载不出来＝黑画面（时好时坏）。web 版保留 SW（PWA/离线要用）。
+2. **`tsconfig.json` 排除 `src-tauri/**`**——`tauri build` 会生成 codegen `.ts` 产物，
+   `**/*.ts` include 会把它拖进 `tsc` 造成误报。
+
+**无 GUI 验证回路**：`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9410`
+启动 exe，用 Playwright `connectOverCDP` 开文件、断言编辑器 iframe + 工具栏、读
+`navigator.serviceWorker.getRegistrations()`。跑前清掉残留的 `document-desktop.exe` /
+`msedgewebview2.exe`。
+
+---
+
 ## 目录结构
 
 ```
