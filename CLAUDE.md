@@ -420,6 +420,9 @@ v7 代码分支（OO_VARIANT、页面级 x2t 打开转换、empty_bin 模板、v
   `handleFileStreamMessage` / `triggerPersonalDownloadAs` / `prepareEditorIframe`
   （最后一个含多个运行时守卫：品牌元素隐藏、SharedWorker 遮蔽、fetchFonts
   字体竞态守卫、**serverless image pipeline**、serverless 保存语义（守卫 5）、
+  **SynchronizeTip 抑制**（守卫 6：新 Excel 误报"文件已被其他使用者更改"——
+  serverless 单用户无第二人，永远假阳性，`Common.UI.SynchronizeTip` 置为 no-op
+  Proxy；**别改回**，也别用填 zh 字串来"修"）、
   `installOpenFailureGuard`（打开转换失败 → asc_onError -82 + toast + 遮罩终止 +
   保存快速拒绝）——其中 image pipeline 修的是"文档含图片
   时保存令主线程永久卡死"：无服务器时 sendImgUrls 注册不了图片，DOCY

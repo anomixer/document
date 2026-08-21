@@ -12,7 +12,10 @@ notes. Entries describe what users experience, not internal refactors.
 - Editing complex real-world PPTX decks can raise "An error occurred during
   the work with the document" (under investigation; a full regression
   campaign against real-world documents is running and gates the next
-  release announcement).
+  release announcement). Note: the *locale-caption* cause of this message —
+  which greyed out the whole editor on open under zh-TW — is now fixed (see
+  Fixed above); the remaining cases are triggered while editing complex
+  content, not on open.
 
 ### Changed
 
@@ -34,6 +37,21 @@ notes. Entries describe what users experience, not internal refactors.
   from Excel) are detected and decoded correctly instead of showing mojibake.
 
 ### Fixed
+
+- **zh-TW / any locale with a missing caption no longer crashes the whole
+  editor.** Opening a document under Traditional Chinese could grey out the
+  entire toolbar, blank the page, and pop "An error occurred during the work
+  with the document — use DownloadAs to back up". A single UI string missing
+  from the locale table threw an error that the SDK escalated to
+  `EditingError`, which disabled the editor. A missing caption now degrades to
+  a blank label instead of taking the editor down (all three editors, all
+  locales).
+- **New Excel files no longer show a false "changed by another user" prompt.**
+  Opening a new workbook could show "The document has been changed by another
+  user — click to save and reload (Ctrl+S)" (zh-TW: "文件已被其他使用者更改…").
+  This is a co-authoring notice that assumes a second person holds the file; in
+  this offline single-user editor there is no second person, so the prompt was
+  always a false positive. It is now suppressed.
 
 - "Excel" files that are really an HTML table (the usual export of web
   systems, saved as .xls/.xlsx) now open and save as a real workbook instead

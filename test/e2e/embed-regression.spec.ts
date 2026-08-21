@@ -65,6 +65,55 @@ test.describe('embed regression (real editor)', () => {
     expect(result.sheets['Third']).toBe('delta,4');
   });
 
+  test('does not show the false co-authoring SynchronizeTip on a new workbook', async ({ page }) => {
+    // Regression (2026-08-21): opening a new Excel showed a spurious
+    // "SynchronizeTip" — "新增undefined 文件已被其他使用者更改。請按一下以保存…
+    // (Ctrl+S)" (EN: "The document has been changed by another user"). The SDK
+    // pops it on open when asc_getLocalRestrictions() is non-None, assuming a
+    // *peer* holds the file; in this serverless single-user editor there is no
+    // peer, so it is always a false positive (and its filename slot is
+    // undefined). The app suppresses it via a prepareEditorIframe guard. Assert
+    // the tip is absent AND the editor is still usable and savable, so a fix
+    // that merely hides the tip without breaking the editor is caught.
+    await page.evaluate(async () => {
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([['hello', 1]]), 'Sheet1');
+      const data = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      await post('document:open-buffer', {
+        fileName: 'synchronize-tip.xlsx',
+        buffer: new Uint8Array(data).buffer,
+        readonly: false,
+      });
+    });
+    // Let the editor settle (the tip, if any, appears on open).
+    await page.waitForTimeout(6000);
+
+    const editorFrame = page
+      .frames()
+      .find((f) => /spreadsheeteditor|documenteditor|presentationeditor/.test(f.url()));
+    expect(editorFrame, 'editor iframe never mounted').toBeTruthy();
+
+    const probe = await editorFrame!.evaluate(() => {
+      const tip = !!document.querySelector('.asc-synchronizetip, .synch-tip-root');
+      const buttons = Array.from(document.querySelectorAll('.asc_button, button, [role=button]'));
+      return { tip, total: buttons.length };
+    });
+
+    // The false co-authoring tip must not be present.
+    expect(probe.tip).toBe(false);
+    // A toolbar rendered (the editor is up, not blank/crashed). The save
+    // round-trip below is the real proof the editor is functional.
+    expect(probe.total).toBeGreaterThan(20);
+
+    // And it must still save (the guard must not have broken the save path).
+    const saved = await page.evaluate(async () => {
+      const s = await post('document:save', {});
+      return { name: s.file.name as string, size: (s.file.size as number) || 0 };
+    });
+    expect(saved.name).toBe('synchronize-tip.xlsx');
+    expect(saved.size).toBeGreaterThan(0);
+  });
+
   test('exports a spreadsheet as PDF through the canvas render pipeline (#28)', async ({ page }) => {
     const result = await page.evaluate(async () => {
       const wb = XLSX.utils.book_new();

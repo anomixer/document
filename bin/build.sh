@@ -57,6 +57,13 @@ else
     echo "Warning: $RAN_FONTS_SRC not found, using existing $PUBLIC_DIR/ran-fonts/."
 fi
 
+# Harden the vendored OnlyOffice app.js against a locale-missing-caption crash
+# that otherwise takes down the whole editor (blank page + greyed toolbar +
+# "An error occurred during the work with the document" dialog). Idempotent:
+# re-applying is a no-op, so this survives a re-vendor. Runs before Vite copies
+# public/ into dist/.
+node bin/patch-vendor-robustness.js
+
 # Run Vite build
 pnpm vite build $VITE_MODE_ARGS
 

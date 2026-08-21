@@ -42,7 +42,9 @@ A privacy-first, browser-based document editor powered by OnlyOffice. Edit DOCX,
 | **Locale Auto-Detection**         | ⚠️ Fallback issues (selecting EN still loads Chinese UI)   | 🌐 **Smart Auto-Detect**: Seamless `EN`, `zh-CN`, `zh-TW` switching preserving URL params |
 | **Word English Mode**             | ❌ Crashes on opening File menu (`TypeError: textContent`) | 🛠️ **Fixed**: Restored missing English translation keys                                   |
 | **Traditional Chinese (`zh-TW`)** | ❌ Omitted / Unsupported                                   | 🇹🇼 **Full Support**: OpenCC `s2twp` bundles & `LCID 1028` regional settings               |
-| **Desktop Application**           | ❌ Web-only                                                | 🖥️ **Tauri App**: Native Windows desktop executable (`.exe`)                              |
+| **Locale caption crash**          | ❌ A missing UI string greyed out the whole editor          | 🛠️ **Fixed**: a missing caption degrades to a blank label, never crashes the editor         |
+| **New-Excel false error**         | ⚠️ "Changed by another user — save & reload" on new files   | 🛠️ **Fixed**: that co-authoring notice is a false positive here and is no longer shown      |
+| **Desktop Application**           | ⚠️ Web-only                                                | 🖥️ **Tauri App**: Native Windows desktop executable (`.exe`)                              |
 
 ---
 

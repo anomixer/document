@@ -169,3 +169,53 @@ Excel/PPT had a text node; after adding the strings the Word-EN File menu opens 
   scope is required on the PAT to delete, `write:packages` alone returns 403).
 - `docker-compose.yaml` references `ghcr.io/anomixer/document:latest` (was `ranuts`); the readme `docker run`
   examples use the same image.
+
+## Vendor app.js: missing-locale-caption crash (any locale, all editors)
+
+**Symptom (reproduced 2026-08-20, v9 vendor):** opening any document under **zh-TW / zh**
+greyed out the entire toolbar, blanked the page, and popped
+"在處理文檔期間發生錯誤 / 用『下載為』備份" (= the `EditingError` dialog). Word/Excel/PPT all
+affected. **English was unaffected** (its string table is complete), which is why an EN-only test
+suite never caught it.
+
+**Root cause:** the button-caption setter in the vendored `app.js` ends with
+`.attr("aria-label", "string"==typeof t?t:t[0])`. When a caption key is absent from the active
+locale table (v9 added feature strings the older zh tables lack — `en.json` has ~242/593/339 more
+keys than `zh-tw.json` for word/excel/ppt), `t` is `undefined` and `t[0]` throws
+`Cannot read properties of undefined (reading '0')`. The SDK escalates that to
+`Asc.c_oAscError.ID.EditingError`, which calls `disableEditing(true)` + `api:disconnect` — the
+whole editor dies. **One missing translation must not take down the entire editor.**
+
+**Fix (app-side, NOT a vendor edit):** `bin/patch-vendor-robustness.js` rewrites the offending
+expression to `"string"==typeof t?t:(t?t[0]:"")` (a missing caption degrades to a blank label).
+It is idempotent and scans the whole `public/web-apps` tree, and `bin/build.sh` runs it before
+`vite build`, so it survives a re-vendor. Do NOT "fix" this by filling the ~1100 missing zh-TW
+strings — that is bottomless and would dump English into the Chinese UI; the guard is the correct
+fix.
+
+**Gotcha:** `bin/build-zh-tw.js` is dead code (v7-era; it crashes on v9 `app.js` because v9 lacks
+its `define('.../locale/zh.json')` marker) and `app.zh-tw.js` is a **v7.4.1 leftover**. The v9
+runtime uses `main/app.js` + the on-disk `locale/zh-tw.json`. Patching the on-disk `locale/*.json`
+does nothing — the strings the crash reads come from the inline module in `app.js`.
+
+## SynchronizeTip false positive on new Excel (co-authoring notice, serverless)
+
+**Symptom (reproduced 2026-08-21):** opening a **new** Excel workbook showed a spurious
+"SynchronizeTip" — zh-TW: "新增undefined 文件已被其他使用者更改。請按一下以保存您的更改並重新載入
+更新。(Ctrl+S)" (EN: "The document has been changed by another user…"). The `undefined` is the
+filename slot (empty because there is no server-side document). **Only Excel** hit it; Word/PPT did
+not.
+
+**Root cause:** on open, the SSE app's header checks `asc_getLocalRestrictions()` and, when it is
+non-None, assumes a *peer* holds the file and does `new Common.UI.SynchronizeTip({...})`. In this
+serverless single-user editor there is no peer, so the tip is always a false positive that just
+lures the user into a pointless save. (Confirmed the app's own `asc_setRestriction` is only used for
+readonly mode and is `null` on a fresh editable workbook, so the trigger is the vendor's internal
+state, not ours.)
+
+**Fix (app-side guard #6 in `prepareEditorIframe`, `lib/onlyoffice-editor.ts`):** replace
+`Common.UI.SynchronizeTip` with a no-op constructor returning a Proxy that swallows any method the
+vendor later calls on the instance (`.on`, `.show`, `.destroy`, …). Earlier a `{destroy(){}}` stub
+crashed with `s.tip.on is not a function` — the vendor calls methods on the returned object, so
+return a permissive Proxy, not a fixed-shape object. Verified the editor still edits and saves
+(`asc_Save` → download stream intact) after suppression, so it is not masking a real lock.

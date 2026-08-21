@@ -662,11 +662,49 @@ function prepareEditorIframe(): boolean {
         console.log('[OO] serverless save semantics installed (autosave loop off, Save/Ctrl+S -> download stream)');
       }
 
+      // 6. Suppress the co-authoring "SynchronizeTip" ("The document has been
+      //    changed by another user ... save & reload", shown as
+      //    "新增undefined 文件已被其他使用者更改…" — the filename slot is
+      //    undefined because there is no server document). On open, the SDK's
+      //    header checks asc_getLocalRestrictions() and, when it is non-None,
+      //    assumes a *peer* holds the document and pops this tip (Excel hits
+      //    this path on a brand-new workbook; Word/PPT do not). This is a
+      //    serverless single-user editor: there is no other user, so the tip
+      //    is always a false positive that just misleads the user into a
+      //    pointless save. The trigger does `new Common.UI.SynchronizeTip({...})`
+      //    and discards the result, so making the constructor a no-op cleanly
+      //    suppresses it. (Not a vendor edit -- app-side guard like the others.)
+      const tipWin = win as unknown as {
+        Common?: { UI?: { SynchronizeTip?: unknown } };
+        __ooSynchronizeTipSuppressed?: boolean;
+      };
+      if (tipWin.Common?.UI?.SynchronizeTip && !tipWin.__ooSynchronizeTipSuppressed) {
+        // The trigger does `new Common.UI.SynchronizeTip({...})` then later calls
+        // methods on the instance (.on, .show, .destroy, ...). Return a proxy
+        // that swallows any call, so no tip is ever rendered and no method is
+        // missing.
+        const noopProxy: unknown = new Proxy(function () {}, {
+          get(_t, prop) {
+            if (prop === Symbol.toPrimitive) return () => '';
+            return noopProxy;
+          },
+          apply() {
+            return noopProxy;
+          },
+        });
+        tipWin.Common.UI.SynchronizeTip = function () {
+          return noopProxy;
+        } as unknown;
+        tipWin.__ooSynchronizeTipSuppressed = true;
+        console.log('[OO] co-authoring SynchronizeTip suppressed (serverless: no other user)');
+      }
+
       if (
         win.__ooSharedWorkerShadowed &&
         ooWin.__ooFetchFontsGuarded &&
         imgWin.__ooImagePipelinePatched &&
-        saveWin.__ooServerlessSavePatched
+        saveWin.__ooServerlessSavePatched &&
+        tipWin.__ooSynchronizeTipSuppressed
       ) {
         fullyApplied = true;
       }
