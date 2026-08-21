@@ -5,7 +5,7 @@ Format loosely follows [Keep a Changelog](https://keepachangelog.com/); this
 file is the single source for the site changelog page and GitHub release
 notes. Entries describe what users experience, not internal refactors.
 
-## [Unreleased]
+## [v0.0.5] - 2026-08-21
 
 ### Known issues
 
@@ -82,8 +82,3 @@ notes. Entries describe what users experience, not internal refactors.
 - Save-as-PDF produces a complete document instead of empty output.
 - Multi-sheet workbooks opened via the embed API save back with all sheets
   intact.
-
-## [0.0.5] - 2026-07-12
-
-Last release of the previous (v7) engine line. See the
-[GitHub release](https://github.com/ranuts/document/releases/tag/v0.0.5).
